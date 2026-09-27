@@ -1,0 +1,387 @@
+@import "tailwindcss";
+@import "./brand-color.generated.css";
+
+@theme inline {
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand green is sampled from the real logo at build time (see scripts/fetch-logo.mjs). */
+  --color-brand: var(--brand-sampled);
+  --color-forest: color-mix(in oklab, var(--brand-sampled) 78%, #10150f);
+  --color-forest-deep: color-mix(in oklab, var(--brand-sampled) 48%, #0d110c);
+  --color-leaf: color-mix(in oklab, var(--brand-sampled) 55%, #9ccf86);
+  --color-mist: color-mix(in oklab, var(--brand-sampled) 10%, #f7f4ee);
+
+  --color-sand: #c9a876;
+  --color-sand-soft: #e7d9bf;
+  --color-cream: #f7f4ee;
+  --color-parchment: #efe9dd;
+  --color-charcoal: #22261f;
+  --color-ink: #2b2e28;
+  --color-stone: #62665d;
+  --color-water: #7fb8c9;
+
+  --radius-card: 1.75rem;
+  --radius-xl2: 1.25rem;
+
+  --shadow-soft: 0 1px 2px rgb(34 38 31 / 0.04), 0 8px 24px -8px rgb(34 38 31 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(34 38 31 / 0.06), 0 22px 44px -16px rgb(34 38 31 / 0.28);
+  --shadow-glow: 0 18px 40px -14px color-mix(in oklab, var(--brand-sampled) 65%, transparent);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--brand-sampled) 30%, #f7f4ee);
+    color: var(--color-charcoal);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-sand);
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-x { padding-inline: 2rem; }
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-forest);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.95rem 1.6rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    transition:
+      transform 0.45s var(--ease-out-soft),
+      box-shadow 0.45s var(--ease-out-soft),
+      background-color 0.3s ease,
+      color 0.3s ease;
+    will-change: transform;
+  }
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+  .btn:active {
+    transform: translateY(-1px);
+  }
+  .btn-primary {
+    background: var(--color-forest);
+    color: #fff;
+    box-shadow: var(--shadow-soft);
+  }
+  .btn-primary:hover {
+    box-shadow: var(--shadow-glow), var(--shadow-lift);
+  }
+  /* soft shine sweep */
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: -20% auto -20% -60%;
+    width: 45%;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.32), transparent);
+    transform: skewX(-18deg) translateX(0);
+    transition: transform 0s;
+  }
+  .btn-primary:hover::after {
+    transform: skewX(-18deg) translateX(420%);
+    transition: transform 0.95s var(--ease-out-soft);
+  }
+  .btn-sand {
+    background: var(--color-sand);
+    color: var(--color-charcoal);
+  }
+  .btn-light {
+    background: rgb(255 255 255 / 0.95);
+    color: var(--color-charcoal);
+    box-shadow: var(--shadow-soft);
+  }
+  .btn-ghost {
+    background: rgb(255 255 255 / 0.08);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28);
+    backdrop-filter: blur(8px);
+  }
+  .btn-ghost:hover {
+    background: rgb(255 255 255 / 0.16);
+  }
+  .btn-outline-dark {
+    background: transparent;
+    color: var(--color-charcoal);
+    box-shadow: inset 0 0 0 1px rgb(34 38 31 / 0.18);
+  }
+  .btn-outline-dark:hover {
+    background: #fff;
+  }
+
+  /* ---------- Nav underline that draws itself ---------- */
+  .nav-link {
+    position: relative;
+    padding-block: 0.4rem;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.1rem;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out-soft);
+  }
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    border-radius: var(--radius-card);
+    background: #fff;
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* ---------- Form ---------- */
+  .field {
+    width: 100%;
+    border-radius: 1rem;
+    background: #fff;
+    border: 1px solid rgb(34 38 31 / 0.12);
+    padding: 0.95rem 1.05rem;
+    font-size: 1rem;
+    color: var(--color-ink);
+    transition: border-color 0.2s ease, box-shadow 0.25s ease;
+  }
+  .field::placeholder { color: rgb(98 102 93 / 0.7); }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand-sampled) 18%, transparent);
+  }
+  .field[aria-invalid="true"] {
+    border-color: #b4533d;
+    box-shadow: 0 0 0 4px rgb(180 83 61 / 0.12);
+  }
+}
+
+/* ---------- Hero Ken Burns ---------- */
+@keyframes ken-burns {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+.ken-burns {
+  animation: ken-burns 20s linear infinite alternate;
+  transform-origin: 55% 45%;
+  will-change: transform;
+}
+
+/* ---------- Testimonial marquee ---------- */
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  animation: marquee 60s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ---------- Film grain ---------- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 1.2s steps(4) infinite;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-2%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---------- Reveal (only hidden once JS is confirmed) ---------- */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.js [data-split] {
+  visibility: hidden;
+}
+
+/* ---------- Leaflet overrides ---------- */
+.service-map .leaflet-container {
+  background: var(--color-parchment);
+  font-family: var(--font-sans);
+}
+.service-map .leaflet-tile-pane {
+  filter: sepia(0.28) saturate(0.7) hue-rotate(35deg) brightness(1.02) contrast(0.95);
+}
+.service-map .leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--shadow-soft) !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+}
+.service-map .leaflet-control-zoom a {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  color: var(--color-charcoal) !important;
+  border: none !important;
+}
+.service-map .leaflet-control-attribution {
+  background: rgb(247 244 238 / 0.85) !important;
+  border-radius: 999px 0 0 0;
+  font-size: 10px;
+  padding: 2px 8px !important;
+}
+.service-map .leaflet-popup-content-wrapper {
+  border-radius: 1.1rem;
+  box-shadow: var(--shadow-lift);
+  background: #fff;
+  color: var(--color-ink);
+}
+.service-map .leaflet-popup-content {
+  margin: 14px 16px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+.service-map .leaflet-popup-tip {
+  box-shadow: none;
+}
+.service-map .leaflet-tooltip.town-tip {
+  background: var(--color-charcoal);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: var(--shadow-soft);
+}
+.service-map .leaflet-tooltip.town-tip::before {
+  display: none;
+}
+.leaflet-marker-icon.map-pin {
+  display: grid;
+  place-items: center;
+}
+.map-pin span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-forest);
+  box-shadow: 0 0 0 4px #fff, 0 6px 16px rgb(34 38 31 / 0.35);
+  transition: transform 0.35s var(--ease-out-soft);
+}
+.map-pin:hover span,
+.map-pin.is-active span {
+  transform: scale(1.3);
+}
+.map-pin.is-active span {
+  background: var(--color-sand);
+}
+.map-pin-you span {
+  background: #fff;
+  box-shadow: 0 0 0 5px var(--color-charcoal), 0 6px 16px rgb(34 38 31 / 0.35);
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.map-pin-you::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--color-charcoal);
+  animation: pulse-ring 1.8s var(--ease-out-soft) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns,
+  .marquee-track,
+  .grain {
+    animation: none !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-split] {
+    visibility: visible;
+  }
+  .marquee {
+    overflow-x: auto;
+  }
+}
