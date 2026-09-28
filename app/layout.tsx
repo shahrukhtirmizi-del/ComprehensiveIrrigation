@@ -51,10 +51,10 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: "/images/estate-landscape-sunset.jpg",
+        url: "/images/hero-sunset-lake-home.jpg",
         width: 1672,
         height: 941,
-        alt: "Manicured lawn and landscaped Florida home at sunset",
+        alt: "Landscaped Florida home and lawn at sunset with a lake behind",
       },
     ],
   },
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/images/estate-landscape-sunset.jpg"],
+    images: ["/images/hero-sunset-lake-home.jpg"],
   },
   icons: {
     icon: [

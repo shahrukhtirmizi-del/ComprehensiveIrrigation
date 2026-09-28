@@ -1,76 +1,92 @@
-import { QuoteMarkIcon } from "@/components/ui/Icons";
+"use client";
 
-// Verbatim customer reviews — do not edit wording.
-const testimonials = [
-  { name: "Kristina Villalta", quote: "Awesome Lawn Services, Always 5 star give them! thanks" },
+import React from "react";
+import { motion, useReducedMotion } from "motion/react";
+
+type Testimonial = { text: string; initials: string; name: string; role: string };
+
+// Verbatim reviews from comprehensiveirrigation.com — do not edit wording, spelling or grammar.
+const testimonials: Testimonial[] = [
+  { text: "Awesome Lawn Services, Always 5 star give them! thanks", initials: "KV", name: "Kristina Villalta", role: "Verified Customer" },
   {
+    text: "Prompt wonderful service I highly recommend this company awesome customer service replied quickly to all my questions",
+    initials: "TH",
     name: "Teena Hill",
-    quote: "Prompt wonderful service I highly recommend this company awesome customer service replied quickly to all my questions",
+    role: "Verified Customer",
   },
-  { name: "Lola Mendez", quote: "Awesome Customer Service with good price!" },
+  { text: "Awesome Customer Service with good price!", initials: "LM", name: "Lola Mendez", role: "Verified Customer" },
   {
+    text: "We are highly recommend! Amazing experience. Such a wonderful place! The staff was so nice, and the price for the services were great! Thanks.",
+    initials: "FK",
     name: "Fred Kennedy",
-    quote:
-      "We are highly recommend! Amazing experience. Such a wonderful place! The staff was so nice, and the price for the services were great! Thanks.",
+    role: "Verified Customer",
   },
-  { name: "Pinoy Leads", quote: "Great Service! Excellent workmanship." },
+  { text: "Great Service! Excellent workmanship.", initials: "PL", name: "Pinoy Leads", role: "Verified Customer" },
 ];
 
-function Card({ name, quote }: { name: string; quote: string }) {
+const TestimonialsColumn = (props: { className?: string; testimonials: Testimonial[]; duration?: number; hidden?: boolean }) => {
+  const reduce = useReducedMotion();
   return (
-    <figure className="flex h-full w-[19rem] shrink-0 flex-col justify-between rounded-[1.5rem] bg-white p-7 shadow-[var(--shadow-soft)] transition-[translate,box-shadow] duration-500 ease-[var(--ease-out-soft)] hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)] sm:w-[23rem]">
-      <div>
-        <QuoteMarkIcon className="h-7 w-7 text-sand" />
-        <blockquote className="mt-4 font-display text-[1.25rem] leading-snug text-charcoal">{quote}</blockquote>
-      </div>
-      <figcaption className="mt-6 flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-mist font-display text-forest" aria-hidden>
-          {name.charAt(0)}
-        </span>
-        <span className="text-sm font-bold text-charcoal">{name}</span>
-      </figcaption>
-    </figure>
+    <div className={props.className} aria-hidden={props.hidden || undefined}>
+      <motion.ul
+        animate={reduce ? undefined : { translateY: "-50%" }}
+        transition={{ duration: props.duration || 10, repeat: Infinity, ease: "linear", repeatType: "loop" }}
+        className="flex flex-col gap-6 pb-6"
+      >
+        {[...new Array(reduce ? 1 : 2)].map((_, index) => (
+          <React.Fragment key={index}>
+            {props.testimonials.map(({ text, initials, name, role }, i) => (
+              <li
+                key={`${index}-${i}`}
+                aria-hidden={index > 0 || undefined}
+                className="w-full max-w-xs rounded-[1.75rem] bg-white p-8 shadow-[var(--shadow-soft)] ring-1 ring-black/5"
+              >
+                <figure>
+                  <blockquote className="font-display text-[1.15rem] leading-snug text-charcoal">{text}</blockquote>
+                  <figcaption className="mt-5 flex items-center gap-3">
+                    <span
+                      className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white"
+                      style={{ background: "var(--brand-sampled, #2F5233)" }}
+                      aria-hidden
+                    >
+                      {initials}
+                    </span>
+                    <span className="flex flex-col">
+                      <span className="font-bold leading-5 tracking-tight text-charcoal">{name}</span>
+                      <span className="text-sm leading-5 tracking-tight text-stone">{role}</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </React.Fragment>
+        ))}
+      </motion.ul>
+    </div>
   );
-}
+};
 
-export function Testimonials() {
+export default function Testimonials() {
+  const firstColumn = testimonials.slice(0, 2);
+  const secondColumn = testimonials.slice(2, 4);
+  const thirdColumn = testimonials.slice(4, 5).concat(testimonials.slice(0, 1));
+
   return (
-    <section id="reviews" aria-labelledby="reviews-title" className="overflow-hidden py-24 md:py-32">
+    <section id="reviews" aria-labelledby="reviews-title" className="bg-parchment py-24 md:py-32">
       <div className="container-x">
-        <div className="grid gap-6 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-7">
-            <p className="eyebrow" data-reveal>
-              Reviews
-            </p>
-            <h2 id="reviews-title" data-split className="mt-4 font-display text-[clamp(2.4rem,5.2vw,4rem)] leading-[1.02] text-charcoal">
-              In our customers&apos; <em className="italic text-forest">own words.</em>
-            </h2>
-          </div>
-          <p className="text-[1.02rem] leading-relaxed text-stone md:col-span-5 md:pb-2" data-reveal>
-            Real reviews from customers across Central Florida. Hover to pause.
-          </p>
+        <div className="flex flex-col items-center text-center">
+          <span className="rounded-full bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-forest shadow-[var(--shadow-soft)]">
+            Testimonials
+          </span>
+          <h2 id="reviews-title" data-split className="mt-5 font-display text-[clamp(2.4rem,5vw,4rem)] leading-[1.02] text-charcoal">
+            What Central Florida homeowners <em className="italic text-forest">say</em>
+          </h2>
         </div>
-      </div>
-
-      <div className="marquee relative mt-14" data-reveal>
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-cream to-transparent md:w-32" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-cream to-transparent md:w-32" />
-        <div className="marquee-track flex w-max py-4">
-          <ul className="flex gap-5 pr-5" data-stagger="0.15">
-            {testimonials.map((t) => (
-              <li key={t.name}>
-                <Card {...t} />
-              </li>
-            ))}
-          </ul>
-          {/* Duplicate set for a seamless loop — hidden from assistive tech. */}
-          <ul className="flex gap-5 pr-5" aria-hidden>
-            {testimonials.map((t) => (
-              <li key={t.name}>
-                <Card {...t} />
-              </li>
-            ))}
-          </ul>
+        <div className="relative mt-12 flex max-h-[740px] justify-center gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">
+          <TestimonialsColumn testimonials={firstColumn} duration={15} />
+          <TestimonialsColumn testimonials={secondColumn} duration={19} className="hidden md:block" />
+          {/* The third column repeats reviews already announced above, so it's hidden from screen readers. */}
+          <TestimonialsColumn testimonials={thirdColumn} duration={17} className="hidden lg:block" hidden />
         </div>
       </div>
     </section>
