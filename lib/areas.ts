@@ -73,3 +73,39 @@ export function nearestTown(point: { lat: number; lng: number }) {
     .map((town) => ({ town, miles: distanceMiles(point, town) }))
     .sort((a, b) => a.miles - b.miles)[0];
 }
+
+/**
+ * The service boundary drawn on the map: a generous ring around the five communities
+ * (Four Corners → Celebration → Haines City → back via Davenport). [lat, lng] pairs.
+ */
+export const SERVICE_POLYGON: [number, number][] = [
+  [28.392, -81.705],
+  [28.39, -81.585],
+  [28.365, -81.5],
+  [28.29, -81.475],
+  [28.19, -81.53],
+  [28.075, -81.545],
+  [28.05, -81.62],
+  [28.085, -81.685],
+  [28.2, -81.72],
+  [28.31, -81.74],
+];
+
+/** Ray-casting point-in-polygon test against SERVICE_POLYGON. */
+export function insideServiceArea(point: { lat: number; lng: number }) {
+  let inside = false;
+  for (let i = 0, j = SERVICE_POLYGON.length - 1; i < SERVICE_POLYGON.length; j = i++) {
+    const [yi, xi] = SERVICE_POLYGON[i];
+    const [yj, xj] = SERVICE_POLYGON[j];
+    if (yi > point.lat !== yj > point.lat && point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+export type CoverageStatus = "in" | "near" | "out";
+
+export function coverageFor(point: { lat: number; lng: number }): { status: CoverageStatus; town: Town; miles: number } {
+  const { town, miles } = nearestTown(point);
+  const status: CoverageStatus = insideServiceArea(point) || miles <= SERVICE_RADIUS_MI ? "in" : miles <= NEARBY_RADIUS_MI ? "near" : "out";
+  return { status, town, miles };
+}

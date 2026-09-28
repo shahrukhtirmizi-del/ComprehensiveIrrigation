@@ -8,10 +8,13 @@ import { business, navLinks } from "@/lib/site";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { PhoneIcon } from "@/components/ui/Icons";
+import { HERO_STATE_EVENT } from "@/lib/events";
 
 export function Header() {
   const pathname = usePathname();
-  const overHero = pathname === "/";
+  // Transparent only while the home hero is still a full-bleed photo (i.e. not yet expanded to the cream page).
+  const [heroExpanded, setHeroExpanded] = useState(false);
+  const overHero = pathname === "/" && !heroExpanded;
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
@@ -34,13 +37,26 @@ export function Header() {
   }, []);
 
   useEffect(() => {
+    const onHero = (e: Event) => setHeroExpanded(Boolean((e as CustomEvent<boolean>).detail));
+    window.addEventListener(HERO_STATE_EVENT, onHero);
+    return () => window.removeEventListener(HERO_STATE_EVENT, onHero);
+  }, []);
+
+  // Lock scrolling while the menu is open, then hand back exactly the state we found (the hero may own it).
+  const savedOverflow = useRef<string | null>(null);
+  useEffect(() => {
     if (open) {
-      stop();
+      savedOverflow.current = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-    } else {
-      start();
-      document.body.style.overflow = "";
+      stop();
+    } else if (savedOverflow.current !== null) {
+      document.body.style.overflow = savedOverflow.current;
+      if (savedOverflow.current !== "hidden") start();
+      savedOverflow.current = null;
     }
+  }, [open, stop, start]);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && open) {
         setOpen(false);
@@ -49,7 +65,7 @@ export function Header() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, stop, start]);
+  }, [open]);
 
   useGSAP(
     () => {
@@ -90,7 +106,7 @@ export function Header() {
           <Logo size={48} tone={light ? "light" : "dark"} />
 
           <nav aria-label="Primary" className="hidden lg:block">
-            <ul className={`flex items-center gap-7 text-[0.92rem] font-semibold ${light ? "text-white" : "text-charcoal"}`}>
+            <ul className={`flex items-center gap-6 text-[0.9rem] font-semibold ${light ? "text-white" : "text-charcoal"}`}>
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="nav-link">
@@ -104,7 +120,7 @@ export function Header() {
           <div className="flex items-center gap-2">
             <a
               href={business.phoneHref}
-              className={`hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-bold md:flex ${light ? "text-white" : "text-charcoal"}`}
+              className={`hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-bold md:flex lg:hidden xl:flex ${light ? "text-white" : "text-charcoal"}`}
             >
               <PhoneIcon className="h-4 w-4" />
               <span className="nav-link">{business.phone}</span>

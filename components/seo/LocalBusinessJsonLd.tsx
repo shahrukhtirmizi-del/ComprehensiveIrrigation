@@ -16,7 +16,7 @@ export function LocalBusinessJsonLd() {
           "Irrigation repair and maintenance, sprinkler optimization, residential and commercial lawn care, landscape design, palm tree care, pest control, pressure washing and outdoor lighting. Over 25 years in the green industry. Fully licensed and insured.",
         url: SITE_URL,
         logo: `${SITE_URL}${business.logo}`,
-        image: `${SITE_URL}/images/estate-landscape-sunset.jpg`,
+        image: [`${SITE_URL}/images/hero-sunset-lake-home.jpg`, `${SITE_URL}/images/about-crew-truck.jpg`],
         telephone: business.phoneE164,
         email: business.email,
         address: {

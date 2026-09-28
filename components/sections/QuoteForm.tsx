@@ -1,35 +1,51 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { serviceCategories } from "@/lib/services";
-import { emptyQuote, formatPhone, validateQuote, type QuoteErrors, type QuoteInput } from "@/lib/quote";
+import {
+  MESSAGE_MAX,
+  contactMethods,
+  emptyQuote,
+  formatPhone,
+  quoteServices,
+  toQuoteService,
+  validateQuote,
+  type QuoteErrors,
+  type QuoteInput,
+} from "@/lib/quote";
 import { business } from "@/lib/site";
 import { SELECT_SERVICE_EVENT } from "@/components/ui/QuoteLink";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
-import { ArrowRightIcon, CheckIcon, ClockIcon, MailIcon, PhoneIcon } from "@/components/ui/Icons";
+import { ArrowRightIcon, CheckIcon, ClockIcon, MailIcon, PhoneIcon, ShieldIcon } from "@/components/ui/Icons";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
 function Field({
   id,
   label,
+  optional,
   error,
   children,
   className = "",
 }: {
   id: string;
   label: string;
+  optional?: boolean;
   error?: string;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2 block text-sm font-bold text-charcoal">
+      <label htmlFor={id} className="mb-2 flex items-baseline justify-between text-sm font-bold text-charcoal">
         {label}
+        {optional && <span className="text-xs font-semibold text-stone">Optional</span>}
       </label>
       {children}
-      <p id={`${id}-error`} className={`mt-1.5 min-h-[1.25rem] text-[0.82rem] font-semibold text-[#b4533d] transition-opacity ${error ? "opacity-100" : "opacity-0"}`} aria-live="polite">
+      <p
+        id={`${id}-error`}
+        className={`mt-1.5 min-h-[1.25rem] text-[0.82rem] font-semibold text-[#b4533d] transition-opacity ${error ? "opacity-100" : "opacity-0"}`}
+        aria-live="polite"
+      >
         {error ?? ""}
       </p>
     </div>
@@ -46,15 +62,24 @@ export function QuoteForm() {
   const thanksRef = useRef<HTMLDivElement>(null);
   const serviceRef = useRef<HTMLSelectElement>(null);
 
-  // Preselect a service when a "Quote this service" button elsewhere is used.
+  // "Quote this service" buttons elsewhere preselect the dropdown and note the specific service.
   useEffect(() => {
     const onSelect = (e: Event) => {
-      const service = (e as CustomEvent<string>).detail;
-      setValues((v) => ({ ...v, service }));
+      const named = (e as CustomEvent<string>).detail;
+      const service = toQuoteService(named);
+      setValues((v) => ({
+        ...v,
+        service,
+        message: v.message || (named !== service ? `I'm interested in: ${named}` : ""),
+      }));
       setErrors((err) => ({ ...err, service: undefined }));
       setStatus((s) => (s === "success" ? "idle" : s));
       if (serviceRef.current) {
-        gsap.fromTo(serviceRef.current, { boxShadow: "0 0 0 0px rgb(201 168 118 / 0.6)" }, { boxShadow: "0 0 0 8px rgb(201 168 118 / 0)", duration: 1.2, delay: 1.2 });
+        gsap.fromTo(
+          serviceRef.current,
+          { boxShadow: "0 0 0 0px rgb(201 168 118 / 0.6)" },
+          { boxShadow: "0 0 0 8px rgb(201 168 118 / 0)", duration: 1.2, delay: 1.2 },
+        );
       }
     };
     window.addEventListener(SELECT_SERVICE_EVENT, onSelect);
@@ -113,7 +138,7 @@ export function QuoteForm() {
         }
         throw new Error("Request failed");
       }
-      setSubmittedName(values.firstName.trim());
+      setSubmittedName(values.name.trim().split(/\s+/)[0] ?? "");
       setValues(emptyQuote);
       setTouched({});
       setErrors({});
@@ -130,10 +155,26 @@ export function QuoteForm() {
     onBlur: () => blur(key),
   });
 
+  const infoCards = [
+    {
+      href: business.phoneHref,
+      icon: <PhoneIcon className="h-5 w-5" />,
+      label: "Call",
+      value: business.phone,
+    },
+    {
+      href: `mailto:${business.email}`,
+      icon: <MailIcon className="h-5 w-5" />,
+      label: "Email",
+      value: business.email,
+    },
+  ];
+
   return (
-    <section id="quote" aria-labelledby="quote-title" className="py-24 md:py-32">
+    <section id="quote" aria-labelledby="quote-title" className="bg-parchment py-24 md:py-32">
       <div className="container-x">
         <div className="grid gap-12 lg:grid-cols-12">
+          {/* Info cards — alongside the form, not instead of it */}
           <div className="min-w-0 lg:col-span-5">
             <p className="eyebrow" data-reveal>
               Free Quote
@@ -146,29 +187,21 @@ export function QuoteForm() {
               phone.
             </p>
 
-            <ul className="mt-9 space-y-3" data-stagger="0.1">
-              <li>
-                <a href={business.phoneHref} className="group flex items-center gap-4 rounded-[1.25rem] bg-white p-4 shadow-[var(--shadow-soft)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
-                  <span className="grid h-11 w-11 place-items-center rounded-full bg-forest text-white">
-                    <PhoneIcon className="h-5 w-5" />
-                  </span>
-                  <span>
-                    <span className="block text-xs font-bold uppercase tracking-[0.14em] text-stone">Call</span>
-                    <span className="block font-display text-lg text-charcoal">{business.phone}</span>
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a href={`mailto:${business.email}`} className="group flex items-center gap-4 rounded-[1.25rem] bg-white p-4 shadow-[var(--shadow-soft)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-forest text-white">
-                    <MailIcon className="h-5 w-5" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-xs font-bold uppercase tracking-[0.14em] text-stone">Email</span>
-                    <span className="block font-display text-[0.92rem] text-charcoal [overflow-wrap:anywhere] sm:text-lg">{business.email}</span>
-                  </span>
-                </a>
-              </li>
+            <ul className="mt-9 space-y-3">
+              {infoCards.map((c) => (
+                <li key={c.label}>
+                  <a
+                    href={c.href}
+                    className="group flex items-center gap-4 rounded-[1.25rem] bg-white p-4 shadow-[var(--shadow-soft)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
+                  >
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-forest text-white">{c.icon}</span>
+                    <span className="min-w-0">
+                      <span className="block text-xs font-bold uppercase tracking-[0.14em] text-stone">{c.label}</span>
+                      <span className="block font-display text-[0.95rem] text-charcoal [overflow-wrap:anywhere] sm:text-lg">{c.value}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
               <li className="flex items-start gap-4 rounded-[1.25rem] bg-white p-4 shadow-[var(--shadow-soft)]">
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-mist text-forest">
                   <ClockIcon className="h-5 w-5" />
@@ -180,10 +213,19 @@ export function QuoteForm() {
                   Sat 7:00 AM–3:00 PM
                 </span>
               </li>
+              <li className="flex items-start gap-4 rounded-[1.25rem] bg-white p-4 shadow-[var(--shadow-soft)]">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-mist text-forest">
+                  <ShieldIcon className="h-5 w-5" />
+                </span>
+                <span className="text-sm leading-relaxed text-ink">
+                  <span className="block text-xs font-bold uppercase tracking-[0.14em] text-stone">Licensed &amp; insured</span>
+                  License {business.license} · Official Grounds Guys Partner
+                </span>
+              </li>
             </ul>
           </div>
 
-          <div className="min-w-0 lg:col-span-7" data-reveal>
+          <div className="min-w-0 lg:col-span-7">
             <div className="rounded-[2rem] bg-white p-6 shadow-[var(--shadow-lift)] sm:p-9 md:p-11">
               {status === "success" ? (
                 <div ref={thanksRef} tabIndex={-1} className="py-10 text-center outline-none md:py-16" role="status">
@@ -195,90 +237,115 @@ export function QuoteForm() {
                   </h3>
                   <p data-thanks-line className="mx-auto mt-3 max-w-md text-[1.02rem] leading-relaxed text-stone">
                     Your quote request is in. We&apos;ll be in touch shortly — usually within one business day. Need us
-                    sooner? Call <a href={business.phoneHref} className="font-bold text-forest">{business.phone}</a>.
+                    sooner? Call{" "}
+                    <a href={business.phoneHref} className="font-bold text-forest">
+                      {business.phone}
+                    </a>
+                    .
                   </p>
                   <button data-thanks-line type="button" onClick={() => setStatus("idle")} className="btn btn-outline-dark mt-8">
                     Request another quote
                   </button>
                 </div>
               ) : (
-                <form ref={formRef} onSubmit={onSubmit} noValidate aria-describedby="quote-note">
+                <form ref={formRef} onSubmit={onSubmit} noValidate aria-describedby="quote-note" className="relative">
+                  <h3 className="mb-6 font-display text-2xl text-charcoal">Request your free quote</h3>
                   <div className="grid gap-x-4 sm:grid-cols-2">
-                    <Field id="firstName" label="First Name" error={errors.firstName}>
-                      <input id="firstName" type="text" autoComplete="given-name" className="field" value={values.firstName} onChange={(e) => update("firstName", e.target.value)} {...aria("firstName")} />
+                    <Field id="name" label="Name" error={errors.name} className="sm:col-span-2">
+                      <input id="name" type="text" autoComplete="name" className="field" value={values.name} onChange={(e) => update("name", e.target.value)} {...aria("name")} />
                     </Field>
-                    <Field id="lastName" label="Last Name" error={errors.lastName}>
-                      <input id="lastName" type="text" autoComplete="family-name" className="field" value={values.lastName} onChange={(e) => update("lastName", e.target.value)} {...aria("lastName")} />
+                    <Field id="phone" label="Phone" error={errors.phone}>
+                      <input
+                        id="phone"
+                        type="tel"
+                        autoComplete="tel-national"
+                        inputMode="tel"
+                        placeholder="(321) 555-0123"
+                        className="field"
+                        value={values.phone}
+                        onChange={(e) => update("phone", formatPhone(e.target.value))}
+                        {...aria("phone")}
+                      />
                     </Field>
                     <Field id="email" label="Email" error={errors.email}>
                       <input id="email" type="email" autoComplete="email" inputMode="email" className="field" value={values.email} onChange={(e) => update("email", e.target.value)} {...aria("email")} />
                     </Field>
-                    <Field id="phone" label="Phone Number" error={errors.phone}>
-                      <input id="phone" type="tel" autoComplete="tel-national" inputMode="tel" placeholder="(321) 555-0123" className="field" value={values.phone} onChange={(e) => update("phone", formatPhone(e.target.value))} {...aria("phone")} />
+                    <Field id="address" label="Service Address" error={errors.address} className="sm:col-span-2">
+                      <input
+                        id="address"
+                        type="text"
+                        autoComplete="street-address"
+                        placeholder="Street, city, ZIP"
+                        className="field"
+                        value={values.address}
+                        onChange={(e) => update("address", e.target.value)}
+                        {...aria("address")}
+                      />
                     </Field>
-                    <Field id="address" label="Street Address" error={errors.address} className="sm:col-span-2 md:col-span-1">
-                      <input id="address" type="text" autoComplete="street-address" className="field" value={values.address} onChange={(e) => update("address", e.target.value)} {...aria("address")} />
-                    </Field>
-                    <Field id="zip" label="ZIP Code" error={errors.zip} className="sm:col-span-2 md:col-span-1">
-                      <input id="zip" type="text" autoComplete="postal-code" inputMode="numeric" maxLength={5} className="field" value={values.zip} onChange={(e) => update("zip", e.target.value.replace(/\D/g, "").slice(0, 5))} {...aria("zip")} />
+                    <Field id="service" label="Service Needed" error={errors.service} className="sm:col-span-2">
+                      <div className="relative">
+                        <select
+                          ref={serviceRef}
+                          id="service"
+                          className="field appearance-none pr-12"
+                          value={values.service}
+                          onChange={(e) => update("service", e.target.value as QuoteInput["service"])}
+                          {...aria("service")}
+                        >
+                          <option value="" disabled>
+                            Choose a service…
+                          </option>
+                          {quoteServices.map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
+                        </select>
+                        <svg className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-stone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      </div>
                     </Field>
                   </div>
 
-                  <fieldset className="mt-1">
-                    <legend className="mb-2 block text-sm font-bold text-charcoal">Property Type</legend>
-                    <div className="relative grid grid-cols-2 rounded-full bg-parchment p-1.5">
-                      <span
-                        aria-hidden
-                        className="absolute inset-y-1.5 left-1.5 w-[calc(50%-0.375rem)] rounded-full bg-white shadow-[var(--shadow-soft)] transition-transform duration-500 ease-[var(--ease-out-soft)]"
-                        style={{ transform: values.propertyType === "Commercial" ? "translateX(100%)" : "translateX(0)" }}
-                      />
-                      {(["Residential", "Commercial"] as const).map((type) => (
-                        <label key={type} className="relative z-10 cursor-pointer rounded-full py-3 text-center text-sm font-bold text-charcoal has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-sand">
+                  <fieldset className="mb-5" aria-describedby="contactMethod-error">
+                    <legend className="mb-2 block text-sm font-bold text-charcoal">Preferred Contact Method</legend>
+                    <div className="grid grid-cols-3 gap-1.5 rounded-full bg-parchment p-1.5">
+                      {contactMethods.map((m) => (
+                        <label
+                          key={m}
+                          className={`relative cursor-pointer rounded-full px-2 py-3 text-center text-[0.82rem] font-bold transition-all duration-300 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-sand sm:text-sm ${
+                            values.contactMethod === m ? "bg-white text-charcoal shadow-[var(--shadow-soft)]" : "text-stone hover:text-charcoal"
+                          }`}
+                        >
                           <input
                             type="radio"
-                            name="propertyType"
-                            value={type}
-                            checked={values.propertyType === type}
-                            onChange={() => update("propertyType", type)}
+                            name="contactMethod"
+                            value={m}
+                            checked={values.contactMethod === m}
+                            onChange={() => update("contactMethod", m)}
                             className="sr-only"
                           />
-                          {type}
+                          {m}
                         </label>
                       ))}
                     </div>
+                    <p id="contactMethod-error" className="sr-only" aria-live="polite">
+                      {errors.contactMethod ?? ""}
+                    </p>
                   </fieldset>
 
-                  <Field id="service" label="Service Needed" error={errors.service} className="mt-5">
-                    <div className="relative">
-                      <select
-                        ref={serviceRef}
-                        id="service"
-                        className="field appearance-none pr-12"
-                        value={values.service}
-                        onChange={(e) => update("service", e.target.value)}
-                        {...aria("service")}
-                      >
-                        <option value="" disabled>
-                          Choose a service…
-                        </option>
-                        {serviceCategories.map((cat) => (
-                          <optgroup key={cat.id} label={cat.title}>
-                            {cat.services.map((s) => (
-                              <option key={s.name} value={s.name}>
-                                {s.name}
-                              </option>
-                            ))}
-                          </optgroup>
-                        ))}
-                        <optgroup label="Other">
-                          <option value="Maintenance Program">Maintenance Program</option>
-                          <option value="Not sure — I'd like advice">Not sure — I&apos;d like advice</option>
-                        </optgroup>
-                      </select>
-                      <svg className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-stone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-                        <path d="m6 9 6 6 6-6" />
-                      </svg>
-                    </div>
+                  <Field id="message" label="Message" optional error={errors.message}>
+                    <textarea
+                      id="message"
+                      rows={4}
+                      maxLength={MESSAGE_MAX}
+                      placeholder="Anything we should know — zones acting up, a leak you've spotted, best time to visit…"
+                      className="field resize-y"
+                      value={values.message}
+                      onChange={(e) => update("message", e.target.value)}
+                      {...aria("message")}
+                    />
                   </Field>
 
                   {/* Honeypot — leave empty. */}

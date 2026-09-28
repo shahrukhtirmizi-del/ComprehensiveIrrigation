@@ -43,42 +43,44 @@ function TiltCard({ category, hidden, onOpen }: { category: ServiceCategory; hid
       ref={wrap}
       onPointerMove={onMove}
       onPointerLeave={reset}
-      className="group relative [perspective:1000px]"
+      className="group relative h-full [perspective:1000px]"
       style={{ visibility: hidden ? "hidden" : "visible" }}
       data-reveal
     >
       <div
         ref={inner}
         data-flip-id={`service-${category.id}`}
-        className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-charcoal shadow-[var(--shadow-soft)] transition-[box-shadow,translate] duration-500 ease-[var(--ease-out-soft)] will-change-transform group-hover:-translate-y-2 group-hover:shadow-[var(--shadow-lift)] group-has-[:focus-visible]:-translate-y-2 group-has-[:focus-visible]:ring-2 group-has-[:focus-visible]:ring-sand"
+        className="relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-forest-deep shadow-[var(--shadow-soft)] transition-[box-shadow,translate] duration-500 ease-[var(--ease-out-soft)] will-change-transform group-hover:-translate-y-2 group-hover:shadow-[var(--shadow-lift)] group-has-[:focus-visible]:-translate-y-2 group-has-[:focus-visible]:ring-2 group-has-[:focus-visible]:ring-sand"
       >
-        <Image
-          src={category.image.src}
-          alt={category.image.alt}
-          fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-out-soft)] group-hover:scale-[1.06]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/95 via-charcoal/35 to-transparent" />
+        {/* Photo area — nothing but the image (and the one badge) ever sits on top of it. */}
+        <div className="relative z-0 aspect-[4/3] shrink-0 overflow-hidden">
+          <Image
+            src={category.image.src}
+            alt={category.image.alt}
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-out-soft)] group-hover:scale-[1.06]"
+          />
+          {category.id === "irrigation" && (
+            <span className="absolute left-4 top-4 z-[1] inline-flex items-center gap-2 rounded-full bg-white/92 px-3.5 py-2 text-xs font-bold text-charcoal shadow-[var(--shadow-soft)] backdrop-blur">
+              <DropIcon className="h-3.5 w-3.5 text-forest" />
+              Up to 30% less water waste
+            </span>
+          )}
+        </div>
 
-        {category.id === "irrigation" && (
-          <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-bold text-charcoal shadow-[var(--shadow-soft)] backdrop-blur">
-            <DropIcon className="h-3.5 w-3.5 text-forest" />
-            Up to 30% less water waste
-          </span>
-        )}
-
-        <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7">
+        {/* Content panel on solid brand green, in normal flow below the photo — no overlap at any width. */}
+        <div className="relative z-[1] flex flex-1 flex-col p-6 text-white md:p-7">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-sand">{category.eyebrow}</p>
           <h3 className="mt-2 font-display text-[1.85rem] leading-[1.05] md:text-[2.1rem]">{category.title}</h3>
           <ul className="mt-4 flex flex-wrap gap-1.5">
             {category.services.map((s) => (
-              <li key={s.name} className="rounded-full bg-white/12 px-3 py-1.5 text-[0.75rem] font-semibold text-white/90 ring-1 ring-white/15 backdrop-blur">
+              <li key={s.name} className="rounded-full bg-white/10 px-3 py-1.5 text-[0.75rem] font-semibold text-white/90 ring-1 ring-white/15">
                 {s.name}
               </li>
             ))}
           </ul>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold" aria-hidden>
+          <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-bold" aria-hidden>
             Explore services
             <span className="grid h-8 w-8 place-items-center rounded-full bg-white text-charcoal transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:rotate-45">
               <ArrowUpRightIcon className="h-4 w-4" />

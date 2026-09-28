@@ -281,8 +281,51 @@
   background: var(--color-parchment);
   font-family: var(--font-sans);
 }
+/* OpenStreetMap's standard tiles, pulled toward the site palette: muted, warm, a little green. */
 .service-map .leaflet-tile-pane {
-  filter: sepia(0.28) saturate(0.7) hue-rotate(35deg) brightness(1.02) contrast(0.95);
+  filter: grayscale(0.6) sepia(0.28) hue-rotate(28deg) saturate(1.05) brightness(1.04) contrast(0.9);
+}
+.map-zoom {
+  position: absolute;
+  right: 16px;
+  bottom: 28px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+.map-zoom button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  transition: background-color 0.2s ease;
+}
+.map-zoom button + button {
+  border-top: 1px solid rgb(34 38 31 / 0.08);
+}
+.map-zoom button:hover {
+  background: var(--color-mist);
+}
+.map-popup-title {
+  margin: 0 0 4px !important;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-charcoal);
+}
+.map-popup-body {
+  margin: 0 0 10px !important;
+  color: var(--color-stone);
+}
+.map-popup-link {
+  font-weight: 700;
+  color: var(--color-forest) !important;
 }
 .service-map .leaflet-control-zoom {
   border: none !important;
@@ -349,6 +392,9 @@
 }
 .map-pin.is-active span {
   background: var(--color-sand);
+}
+.map-pin-you.is-out span {
+  box-shadow: 0 0 0 5px var(--color-sand), 0 6px 16px rgb(34 38 31 / 0.35);
 }
 .map-pin-you span {
   background: #fff;

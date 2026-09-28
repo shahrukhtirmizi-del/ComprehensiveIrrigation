@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { validateQuote, type QuoteInput } from "@/lib/quote";
+import { contactMethods, validateQuote, type ContactMethod, type QuoteInput, type QuoteService } from "@/lib/quote";
 import { business } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -30,14 +30,15 @@ async function sendEmail(q: QuoteInput) {
   const to = process.env.QUOTE_TO_EMAIL;
   if (!key || !to) return false;
   const rows = Object.entries({
-    Name: `${q.firstName} ${q.lastName}`,
-    Email: q.email,
+    Name: q.name,
     Phone: q.phone,
-    Address: `${q.address}, ${q.zip}`,
-    Property: q.propertyType,
-    Service: q.service,
+    Email: q.email,
+    "Service address": q.address,
+    "Service needed": q.service,
+    "Preferred contact": q.contactMethod,
+    Message: q.message || "—",
   })
-    .map(([k, v]) => `<tr><td style="padding:6px 12px;color:#62665d">${k}</td><td style="padding:6px 12px"><strong>${escape(v)}</strong></td></tr>`)
+    .map(([k, v]) => `<tr><td style="padding:6px 12px;color:#62665d">${k}</td><td style="padding:6px 12px;white-space:pre-wrap"><strong>${escape(v)}</strong></td></tr>`)
     .join("");
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -46,7 +47,7 @@ async function sendEmail(q: QuoteInput) {
       from: process.env.QUOTE_FROM_EMAIL ?? `${business.shortName} Website <onboarding@resend.dev>`,
       to: to.split(",").map((s) => s.trim()),
       reply_to: q.email,
-      subject: `New quote request: ${q.service} — ${q.firstName} ${q.lastName} (${q.zip})`,
+      subject: `New quote request: ${q.service} — ${q.name}`,
       html: `<h2 style="font-family:Georgia,serif">New quote request</h2><table>${rows}</table>`,
     }),
   });
@@ -84,16 +85,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const str = (k: string) => (typeof body[k] === "string" ? (body[k] as string).trim().slice(0, 200) : "");
+  const str = (k: string, max = 200) => (typeof body[k] === "string" ? (body[k] as string).trim().slice(0, max) : "");
+  const method = str("contactMethod");
   const quote: QuoteInput = {
-    firstName: str("firstName"),
-    lastName: str("lastName"),
-    email: str("email"),
+    name: str("name"),
     phone: str("phone"),
+    email: str("email"),
     address: str("address"),
-    zip: str("zip"),
-    propertyType: str("propertyType") === "Commercial" ? "Commercial" : "Residential",
-    service: str("service"),
+    service: str("service") as QuoteService,
+    contactMethod: ((contactMethods as readonly string[]).includes(method) ? method : "Phone call") as ContactMethod,
+    message: str("message", 1200),
   };
 
   const errors = validateQuote(quote);
