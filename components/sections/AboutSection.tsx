@@ -13,8 +13,8 @@ const CSS = `
   }
   .nf-title {
     position: absolute; top: max(5.2%, 92px); left: 3.65%; z-index: 5; margin: 0;
-    font-family: var(--font-sans), Arial, Helvetica, sans-serif; font-size: clamp(56px, 8vw, 130px);
-    font-weight: 800; line-height: 0.82; letter-spacing: -0.04em;
+    font-family: var(--font-display), Arial, Helvetica, sans-serif; font-size: clamp(56px, 8vw, 130px);
+    font-weight: 800; line-height: 0.82; letter-spacing: -0.06em;
     text-transform: uppercase; color: var(--nf-green); pointer-events: none;
   }
   .nf-title-line { display: block; overflow: hidden; padding-bottom: 0.1em; }

@@ -1,4 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
+import TrustWheel from "@/components/sections/TrustWheel";
 import AboutSection from "@/components/sections/AboutSection";
 import { Services } from "@/components/sections/Services";
 import { WaterCallout } from "@/components/sections/WaterCallout";
@@ -6,7 +7,7 @@ import { MaintenanceProgram } from "@/components/sections/MaintenanceProgram";
 import OurWorkGallery from "@/components/OurWorkGallery";
 import { BrandStatement } from "@/components/sections/BrandStatement";
 import { BeforeAfter } from "@/components/sections/BeforeAfter";
-import { Trust } from "@/components/sections/Trust";
+import { Mission } from "@/components/sections/Mission";
 import Testimonials from "@/components/sections/Testimonials";
 import { ServiceArea } from "@/components/sections/ServiceArea";
 import { QuoteForm } from "@/components/sections/QuoteForm";
@@ -16,6 +17,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <TrustWheel />
       <AboutSection />
       <Services />
       <WaterCallout />
@@ -23,7 +25,7 @@ export default function Home() {
       <OurWorkGallery />
       <BrandStatement />
       <BeforeAfter />
-      <Trust />
+      <Mission />
       <Testimonials />
       <ServiceArea />
       <QuoteForm />

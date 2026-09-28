@@ -75,7 +75,7 @@ export function ServiceArea() {
               Service Area
             </p>
             <h2 id="area-title" data-split className="mt-4 font-display text-[clamp(2.3rem,4.8vw,3.75rem)] leading-[1.03] text-charcoal">
-              Rooted in <em className="italic text-forest">Central Florida.</em>
+              Rooted in <em className="text-forest">Central Florida.</em>
             </h2>
             <p className="mt-5 text-[1.02rem] leading-relaxed text-stone" data-reveal>
               Five communities, one dependable crew — plus the surrounding areas. Pick a town, or check your address.

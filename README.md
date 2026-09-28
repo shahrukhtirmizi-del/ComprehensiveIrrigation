@@ -28,10 +28,14 @@ fails, the build still succeeds: the green falls back to `#2F5233` and `next.con
 Form fields: name, phone, email, service address, service needed, preferred contact method, message.
 With no delivery channel configured, requests are written to the server log (Vercel → Logs) so nothing is lost.
 
-**Hero.** `components/sections/Hero.tsx` feeds `ScrollExpandMedia`: while the centre image is collapsed, scrolling
-grows it instead of moving the page; once it fills the frame, normal scrolling resumes. Swap `heroMedia` to
-`{ type: "video", src: "/video/hero.mp4", poster: … }` for film. Visitors who prefer reduced motion, arrive on a
-`/#section` link, or tab past the hero get it pre-expanded.
+**Hero.** `components/sections/Hero.tsx`: a cinematic still (`heroMedia`) under gradient + grain overlays, a
+pull-up "Comprehensive" headline and a hover-reveal quote CTA. To use film later, swap the `<img>` for a `<video>`.
+
+**Menu.** `components/layout/DrapeMenu.tsx`: the "Menu" toggle lives in the header bar; the cream SVG drape falls
+under the bar (so the real logo and "Close" stay on top) with the link letters sliding in. Links are the `LINKS` array.
+
+**Typography.** Bricolage Grotesque for display (bold, tracking −0.05em on h1/h2), DM Sans for body — both loaded with
+`next/font` in `app/layout.tsx`. Headline accent words are set in colour, not italic (Bricolage has no italic).
 
 **Service-area map.** react-leaflet over OpenStreetMap's standard tiles (no API key), tinted to the palette in
 `app/globals.css` (`.service-map .leaflet-tile-pane`). The boundary polygon and town pins live in `lib/areas.ts`.

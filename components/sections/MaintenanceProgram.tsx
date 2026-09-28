@@ -18,7 +18,7 @@ export function MaintenanceProgram() {
               Maintenance Program
             </p>
             <h2 id="maintenance-title" data-split className="mt-4 font-display text-[clamp(2.1rem,4.4vw,3.4rem)] leading-[1.04] text-charcoal">
-              The Comprehensive <em className="italic text-forest">Preferred</em> Program
+              The Comprehensive <em className="text-forest">Preferred</em> Program
             </h2>
             <p className="mt-5 max-w-md text-[1.02rem] leading-relaxed text-stone" data-reveal>
               Regular, scheduled care for your irrigation system and landscape — so the small problems that waste water

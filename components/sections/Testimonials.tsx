@@ -79,7 +79,7 @@ export default function Testimonials() {
             Testimonials
           </span>
           <h2 id="reviews-title" data-split className="mt-5 font-display text-[clamp(2.4rem,5vw,4rem)] leading-[1.02] text-charcoal">
-            What Central Florida homeowners <em className="italic text-forest">say</em>
+            What Central Florida homeowners <em className="text-forest">say</em>
           </h2>
         </div>
         <div className="relative mt-12 flex max-h-[740px] justify-center gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">

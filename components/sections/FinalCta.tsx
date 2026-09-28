@@ -15,8 +15,8 @@ export function FinalCta() {
           <p className="eyebrow !text-sand-soft" data-reveal>
             Don&apos;t waste water
           </p>
-          <h2 id="final-cta-title" data-split className="mt-5 font-display text-[clamp(2.6rem,7vw,5.6rem)] leading-[0.98] tracking-[-0.03em]">
-            Ready to Stop <em className="italic text-sand-soft">Wasting</em> Water?
+          <h2 id="final-cta-title" data-split className="mt-5 font-display text-[clamp(2.6rem,7vw,5.6rem)] leading-[0.95] tracking-[-0.06em]">
+            Ready to Stop <em className="text-sand-soft">Wasting</em> Water?
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-[1.05rem] leading-relaxed text-white/75 md:text-lg" data-reveal>
             Get a free, no-obligation quote from a licensed, insured team with more than 25 years in the green

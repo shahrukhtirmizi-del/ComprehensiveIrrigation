@@ -4,7 +4,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, typ
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
-import { HERO_EXPAND_EVENT } from "@/lib/events";
 
 type ScrollApi = {
   scrollTo: (target: string | HTMLElement | number, opts?: { offset?: number; immediate?: boolean }) => void;
@@ -24,8 +23,10 @@ const HEADER_OFFSET = -84;
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
-  // Children (e.g. the hero) can ask to pause scrolling before Lenis exists; remember it.
+  // Children (e.g. an overlay menu) can ask to pause scrolling before Lenis exists; remember it.
   const stoppedRef = useRef(false);
+  // A destination requested while scrolling was paused; travelled to the moment scrolling resumes.
+  const pendingRef = useRef<{ target: string | HTMLElement | number; offset?: number } | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -52,6 +53,12 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const offset = opts.offset ?? HEADER_OFFSET;
     const lenis = lenisRef.current;
     if (lenis) {
+      // Paused by an overlay (e.g. the drape menu): Lenis resets on start(), which would cancel a
+      // scroll begun now, so hold the destination until scrolling resumes.
+      if (stoppedRef.current) {
+        pendingRef.current = { target, offset: opts.offset };
+        return;
+      }
       // Re-measure first: after a client-side route change Lenis still knows the old page's height
       // and would clamp the destination to it.
       lenis.resize();
@@ -73,6 +80,9 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       start: () => {
         stoppedRef.current = false;
         lenisRef.current?.start();
+        const pending = pendingRef.current;
+        pendingRef.current = null;
+        if (pending) requestAnimationFrame(() => scrollTo(pending.target, { offset: pending.offset }));
       },
     }),
     [scrollTo],
@@ -90,9 +100,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!el) return;
       e.preventDefault();
       history.replaceState(null, "", url.hash);
-      // Open the scroll-to-expand hero first (a no-op if it's already open), then travel once the page is unlocked.
-      window.dispatchEvent(new Event(HERO_EXPAND_EVENT));
-      requestAnimationFrame(() => requestAnimationFrame(() => scrollTo(el)));
+      scrollTo(el);
     };
     // Capture phase: runs before next/link's handler, which then sees defaultPrevented and stands down.
     document.addEventListener("click", onClick, true);
@@ -106,7 +114,6 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       lenisRef.current?.scrollTo(0, { immediate: true });
       return;
     }
-    window.dispatchEvent(new Event(HERO_EXPAND_EVENT));
     const id = window.setTimeout(() => {
       const el = document.querySelector<HTMLElement>(decodeURIComponent(hash));
       if (el) scrollTo(el, { immediate: true });

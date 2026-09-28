@@ -84,7 +84,7 @@ export function MorphingText({
   `;
 
   const typography: CSSProperties = {
-    fontFamily: "var(--font-sans), Arial, Helvetica, sans-serif",
+    fontFamily: "var(--font-display), Arial, Helvetica, sans-serif",
     fontSize: "clamp(40px, 9vw, 120px)",
     fontWeight: 800,
     lineHeight: 1,

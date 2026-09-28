@@ -2,8 +2,8 @@
 @import "./brand-color.generated.css";
 
 @theme inline {
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif;
 
   /* Brand green is sampled from the real logo at build time (see scripts/fetch-logo.mjs). */
   --color-brand: var(--brand-sampled);
@@ -62,10 +62,24 @@
     outline-offset: 3px;
     border-radius: 0.5rem;
   }
-  h1, h2, h3, h4 {
+  /* Display type: Bricolage Grotesque, bold, tightly tracked. The accent word in a headline is set
+     in colour, never italic (Bricolage has no italic, and a synthesized oblique looks cheap). */
+  h1, h2 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.98;
     text-wrap: balance;
+    font-variation-settings: "opsz" 96;
+  }
+  h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 650;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  h1 em, h2 em, h3 em {
+    font-style: normal;
   }
   p {
     text-wrap: pretty;
