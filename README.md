@@ -28,8 +28,13 @@ fails, the build still succeeds: the green falls back to `#2F5233` and `next.con
 Form fields: name, phone, email, service address, service needed, preferred contact method, message.
 With no delivery channel configured, requests are written to the server log (Vercel → Logs) so nothing is lost.
 
-**Hero.** `components/sections/Hero.tsx`: a cinematic still (`heroMedia`) under gradient + grain overlays, a
-pull-up "Comprehensive" headline and a hover-reveal quote CTA. To use film later, swap the `<img>` for a `<video>`.
+**Hero.** `components/sections/Hero.tsx` (SplitRevealHero): a one-time cover-reveal intro — black panels show the
+name, fold it into "25", split open onto the hero still (`heroMedia`) and reveal the tagline card. Web Animations API
+only; reduced-motion visitors get the settled state immediately. The first letter's travel is measured at runtime, so
+the studio name can change freely.
+
+**Header.** Floats fully transparent over the hero; past 80px of scroll a white, blurred background with a hairline
+border fades in (a separate layer, so the fixed drape menu isn't trapped inside a backdrop-filter).
 
 **Menu.** `components/layout/DrapeMenu.tsx`: the "Menu" toggle lives in the header bar; the cream SVG drape falls
 under the bar (so the real logo and "Close" stay on top) with the link letters sliding in. Links are the `LINKS` array.
