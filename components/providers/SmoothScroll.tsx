@@ -32,8 +32,9 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
-    // Slightly weighted, never floaty.
-    const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.95, smoothWheel: true });
+    // The page's one shared Lenis instance. Scroll-driven sections (e.g. CinematicGalleryReveal) ride this
+    // rather than creating their own, so there is never a second smoother fighting over the window.
+    const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
     lenisRef.current = lenis;
     if (stoppedRef.current) lenis.stop();
 

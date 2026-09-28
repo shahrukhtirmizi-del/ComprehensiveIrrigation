@@ -1,35 +1,38 @@
-import { Hero } from "@/components/sections/Hero";
-import TrustWheel from "@/components/sections/TrustWheel";
-import AboutSection from "@/components/sections/AboutSection";
-import { Services } from "@/components/sections/Services";
-import { WaterCallout } from "@/components/sections/WaterCallout";
-import { MaintenanceProgram } from "@/components/sections/MaintenanceProgram";
+import SplitRevealHero from "@/components/SplitRevealHero";
+import CinematicGalleryReveal from "@/components/CinematicGalleryReveal";
+import ServiceScrollCards from "@/components/ServiceScrollCards";
 import OurWorkGallery from "@/components/OurWorkGallery";
 import { BrandStatement } from "@/components/sections/BrandStatement";
-import { BeforeAfter } from "@/components/sections/BeforeAfter";
-import { Mission } from "@/components/sections/Mission";
-import Testimonials from "@/components/sections/Testimonials";
-import { ServiceArea } from "@/components/sections/ServiceArea";
+import { RevealText } from "@/components/RevealText";
 import { QuoteForm } from "@/components/sections/QuoteForm";
-import { FinalCta } from "@/components/sections/FinalCta";
+import { MaintenanceProgram } from "@/components/sections/MaintenanceProgram";
+import Testimonials from "@/components/Testimonials";
+import TrustWordWheel from "@/components/TrustWordWheel";
 
+// The whole site shares one Lenis instance (components/providers/SmoothScroll, mounted in app/layout.tsx),
+// wired to ScrollTrigger and the GSAP ticker. The footer (ChromaticFooter) is also mounted by the layout.
 export default function Home() {
   return (
     <>
-      <Hero />
-      <TrustWheel />
-      <AboutSection />
-      <Services />
-      <WaterCallout />
-      <MaintenanceProgram />
+      {/* 1–2: the hero hands straight off to the gallery reveal — nothing in between. */}
+      <SplitRevealHero />
+      <CinematicGalleryReveal embedded={false} />
+      {/* 3 */}
+      <ServiceScrollCards />
+      {/* Photo gallery + lightbox (#work) — kept: nav, "See Our Work" and the button audit all point at it. */}
       <OurWorkGallery />
+      {/* 4: Protect Your Lawn */}
       <BrandStatement />
-      <BeforeAfter />
-      <Mission />
-      <Testimonials />
-      <ServiceArea />
+      {/* 5 */}
+      <RevealText />
+      {/* Quote form (#quote) — kept: every "Get a Free Quote" CTA on the site lands here. */}
       <QuoteForm />
-      <FinalCta />
+      {/* 6: Comprehensive Preferred Program */}
+      <MaintenanceProgram />
+      {/* 7 */}
+      <Testimonials />
+      {/* 8 */}
+      <TrustWordWheel />
     </>
   );
 }

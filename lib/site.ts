@@ -32,10 +32,9 @@ export const business = {
 } as const;
 
 export const navLinks = [
-  { href: "/#about", label: "About" },
   { href: "/#services", label: "Services" },
-  { href: "/#maintenance", label: "Maintenance Program" },
   { href: "/#work", label: "Our Work" },
+  { href: "/#maintenance", label: "Maintenance Program" },
   { href: "/#reviews", label: "Reviews" },
-  { href: "/#service-area", label: "Service Area" },
+  { href: "/#quote", label: "Free Quote" },
 ] as const;

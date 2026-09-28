@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
-import { CloseIcon } from "@/components/ui/Icons";
+import { ArrowRightIcon, CloseIcon } from "@/components/ui/Icons";
 
 type Work = { caption: string; detail: string; src: string; alt: string };
 
@@ -325,7 +325,10 @@ function DetailView({ initialIndex, onClose }: { initialIndex: number; onClose: 
         window.setTimeout(() => (wheelLock.current = false), 520);
       }}
     >
-      <div className="container-x flex items-center justify-between pt-6">
+      {/* Must stack above the full-bleed photo strip below: that <ul> is absolutely positioned over the whole
+          viewport, so without a z-index here it sat on top of this (static) row and swallowed every click on
+          "Back to gallery" — the press landed on the strip, which only knows how to drag. */}
+      <div className="container-x relative z-10 flex items-center justify-between pt-6">
         <button ref={closeRef} type="button" onClick={onClose} className="btn btn-outline-dark !py-3 text-sm">
           <CloseIcon className="h-4 w-4" /> Back to gallery
         </button>
@@ -364,8 +367,30 @@ function DetailView({ initialIndex, onClose }: { initialIndex: number; onClose: 
         })}
       </ul>
 
-      <p className="absolute bottom-6 left-5 text-xs font-bold uppercase tracking-[0.16em] text-stone md:left-8">Drag, swipe or use ← →</p>
-      <p className="absolute bottom-6 right-5 text-xs font-bold tabular-nums tracking-[0.16em] text-stone md:right-8" aria-live="polite">
+      <p className="absolute bottom-6 left-5 z-10 hidden text-xs font-bold uppercase tracking-[0.16em] text-stone sm:block md:left-8">
+        Drag, swipe or use ← →
+      </p>
+      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3">
+        <button
+          type="button"
+          onClick={() => go(index - 1)}
+          disabled={index === 0}
+          aria-label="Previous photo"
+          className="grid h-11 w-11 place-items-center rounded-full bg-white text-charcoal shadow-[var(--shadow-soft)] ring-1 ring-black/5 transition-opacity disabled:opacity-35"
+        >
+          <ArrowRightIcon className="h-4 w-4 rotate-180" />
+        </button>
+        <button
+          type="button"
+          onClick={() => go(index + 1)}
+          disabled={index === works.length - 1}
+          aria-label="Next photo"
+          className="grid h-11 w-11 place-items-center rounded-full bg-white text-charcoal shadow-[var(--shadow-soft)] ring-1 ring-black/5 transition-opacity disabled:opacity-35"
+        >
+          <ArrowRightIcon className="h-4 w-4" />
+        </button>
+      </div>
+      <p className="absolute bottom-6 right-5 z-10 text-xs font-bold tabular-nums tracking-[0.16em] text-stone md:right-8" aria-live="polite">
         {pad(index + 1)} / {pad(works.length)}
       </p>
     </div>

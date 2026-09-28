@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
+import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { MotionController } from "@/components/providers/MotionController";
@@ -9,18 +9,17 @@ import { CookieConsent } from "@/components/layout/CookieConsent";
 import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
 import { SITE_URL, business } from "@/lib/site";
 
-// Display: Bricolage Grotesque (bold, tightly tracked). Body: DM Sans.
-const bricolage = Bricolage_Grotesque({
+// Inter for the whole site; DM Sans only for the split-reveal hero. Both self-hosted from Google Fonts by next/font.
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-bricolage",
-  axes: ["opsz", "wdth"],
+  variable: "--font-inter",
   display: "swap",
 });
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-dm-sans",
-  axes: ["opsz"],
+  weight: ["400", "500", "600", "900"],
   display: "swap",
 });
 
@@ -81,14 +80,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f4ee",
+  themeColor: "#f6f2e8",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-US" className={`${bricolage.variable} ${dmSans.variable}`} suppressHydrationWarning>
+    <html lang="en-US" className={`${inter.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
         {/* Marks JS as available so reveal animations can hide content up-front without hurting no-JS visitors. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

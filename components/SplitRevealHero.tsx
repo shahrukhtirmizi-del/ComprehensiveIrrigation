@@ -7,27 +7,23 @@ type Triple = [string, string, string];
 export interface SplitRevealHeroProps {
   studio?: string;
   numeral?: string;
+  logo?: string;
   cardTitle?: string;
   tags?: Triple;
   heroImage?: string;
   heroAlt?: string;
+  menuLabel?: string;
+  /** The site's floating header already carries the logo and a working Menu, so the in-hero nav is opt-in. */
+  showNav?: boolean;
   footerLeft?: string;
   footerRight?: string;
   className?: string;
 }
 
-/**
- * heroMedia — the still revealed behind the covers. Swap `src` (or the <img> for a <video>) to change it.
- */
-export const heroMedia = {
-  src: "/images/hero-sunset-lake-home.jpg",
-  alt: "Elevated view of a landscaped Florida home and manicured lawn at sunset, with a lake behind it",
-};
-
 const splitChars = (text: string, markFirst = false) =>
   Array.from(text).map((char, index) => (
     <span className={`sf-char${markFirst && index === 0 ? " sf-first" : ""}`} key={`${char}-${index}`}>
-      <span>{char === " " ? " " : char}</span>
+      <span>{char === " " ? " " : char}</span>
     </span>
   ));
 
@@ -45,11 +41,12 @@ const splitWords = (text: string) => {
   return words.map((word, index) => (
     <span className="sf-word" key={`${word}-${index}`}>
       {word}
-      {index < words.length - 1 ? " " : ""}
+      {index < words.length - 1 ? " " : ""}
     </span>
   ));
 };
 
+// Decorative, so the cover text is a <p>, not a heading: the card below holds the page's only <h1>.
 const Cover = ({ position, studio, numeral }: { position: "top" | "bottom"; studio: string; numeral: string }) => (
   <div className={`sf-cover sf-${position}`} aria-hidden="true">
     <div className="sf-intro">
@@ -62,19 +59,22 @@ const Cover = ({ position, studio, numeral }: { position: "top" | "bottom"; stud
 );
 
 /**
- * Cover-reveal intro: two black panels show the studio name, which folds into the numeral; the panels
- * then split to open onto the hero image, and a cream card reveals the tagline. Web Animations API only,
- * runs once on load, and shows the settled end state straight away for reduced-motion visitors.
+ * Cover-reveal intro: two panels show the studio name, which folds into the numeral; the panels then
+ * split to open onto the hero image, and a card reveals the title. Web Animations API only, runs once
+ * on load, and shows the settled end state straight away for reduced-motion visitors.
  */
-export function SplitRevealHero({
+export default function SplitRevealHero({
   studio = "Comprehensive Irrigation",
-  numeral = "25",
-  cardTitle = "Every Drop Counts",
-  tags = ["Irrigation & Repair", "Lawn Care", "Water-Smart Systems"],
-  heroImage = heroMedia.src,
-  heroAlt = heroMedia.alt,
+  numeral = "24",
+  logo = "CI",
+  cardTitle = "Comprehensive Irrigation",
+  tags = ["Smart Irrigation", "Lawn Care", "Water Conservation"],
+  heroImage = "/images/hero-lawn.jpg",
+  heroAlt = "A healthy, freshly irrigated lawn in Central Florida",
+  menuLabel = "Menu",
+  showNav = false,
   footerLeft = "Scroll Down",
-  footerRight = "Central Florida's Irrigation Experts",
+  footerRight = "Licensed & Insured",
   className = "",
 }: SplitRevealHeroProps) {
   const rootRef = useRef<HTMLElement>(null);
@@ -98,8 +98,7 @@ export function SplitRevealHero({
     const animate = (targets: Element | Element[], frames: Keyframe[], options: KeyframeAnimationOptions) => {
       const elements = Array.isArray(targets) ? targets : [targets];
       elements.forEach((element) => {
-        const animation = element.animate(frames, { fill: "forwards", ...options });
-        animations.push(animation);
+        animations.push(element.animate(frames, { fill: "forwards", ...options }));
       });
     };
 
@@ -116,21 +115,21 @@ export function SplitRevealHero({
     const scene = root.querySelector<HTMLElement>(".sf-scene");
     const card = root.querySelector<HTMLElement>(".sf-card");
 
-    const settle = () => {
+    const hideCovers = () => {
       covers.forEach((cover) => {
         cover.style.display = "none";
       });
       if (tagsLayer) tagsLayer.style.display = "none";
+      root.dataset.revealed = "true";
+    };
+
+    if (reducedMotion) {
+      hideCovers();
       if (scene) scene.style.clipPath = "inset(0)";
       if (card) card.style.clipPath = "inset(0)";
       select<HTMLElement>(".sf-card .sf-char > span").forEach((character) => {
         character.style.transform = "translate3d(0,0,0)";
       });
-      root.dataset.revealed = "true";
-    };
-
-    if (reducedMotion) {
-      settle();
       return;
     }
 
@@ -147,8 +146,8 @@ export function SplitRevealHero({
       const topCover = root.querySelector<HTMLElement>(".sf-top");
       const bottomCover = root.querySelector<HTMLElement>(".sf-bottom");
 
-      // Where the first letter has to travel so it lands just left of the grown numeral. Measured, not
-      // hard-coded, so it works for any studio name and viewport.
+      // Where the first letter has to travel to land just left of the grown numeral. Measured rather than
+      // hard-coded, so a long studio name like "Comprehensive Irrigation" still lands in the right place.
       const numeralShift = (mobile ? -3 : -8) * rem;
       const numeralFinalFont = (mobile ? 6 : 14) * rem;
       const firstBox = root.querySelector(".sf-top .sf-first")?.getBoundingClientRect();
@@ -163,22 +162,22 @@ export function SplitRevealHero({
         const gap = numeralFinalFont * 0.06;
         firstTravel = finalNumberLeft - gap - firstBox.width * 0.75 - firstBox.left;
       }
-      const firstTravelMid = firstTravel + 1 * rem;
+      const firstTravelMid = firstTravel + rem;
 
       tagWords.forEach((word, index) => {
-        animate(word, [{ transform: "translate3d(0,-130%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 420 + index * 85, easing: ease });
+        animate(word, [{ transform: "translate3d(0,-110%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 420 + index * 85, easing: ease });
       });
 
       introCharacters.forEach((character, index) => {
-        animate(character, [{ transform: "translate3d(0,-130%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 420 + index * 45, easing: ease });
+        animate(character, [{ transform: "translate3d(0,-110%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 420 + index * 45, easing: ease });
       });
 
       remainingIntroCharacters.forEach((character, index) => {
-        animate(character, [{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(0,130%,0)" }], { duration: 720, delay: 1920 + index * 35, easing: ease });
+        animate(character, [{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(0,110%,0)" }], { duration: 720, delay: 1920 + index * 45, easing: ease });
       });
 
       numeralInnerCharacters.forEach((character, index) => {
-        animate(character, [{ transform: "translate3d(0,-130%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 2720 + index * 70, easing: ease });
+        animate(character, [{ transform: "translate3d(0,-110%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 2420 + index * 70, easing: ease });
       });
 
       firstCharacters.forEach((character) => {
@@ -218,7 +217,7 @@ export function SplitRevealHero({
       });
 
       tagWords.forEach((word, index) => {
-        animate(word, [{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(0,130%,0)" }], { duration: 720, delay: 5420 + index * 85, easing: ease });
+        animate(word, [{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(0,110%,0)" }], { duration: 720, delay: 5420 + index * 85, easing: ease });
       });
 
       later(5920, () => {
@@ -232,20 +231,14 @@ export function SplitRevealHero({
       });
 
       cardCharacters.forEach((character, index) => {
-        animate(character, [{ transform: "translate3d(0,130%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 6420 + index * 45, easing: ease });
+        animate(character, [{ transform: "translate3d(0,110%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 6420 + index * 45, easing: ease });
       });
 
-      // Once everything has landed, remove the covers entirely so nothing sits over the page.
-      later(6420 + cardCharacters.length * 45 + 800, () => {
-        covers.forEach((cover) => {
-          cover.style.display = "none";
-        });
-        if (tagsLayer) tagsLayer.style.display = "none";
-        root.dataset.revealed = "true";
-      });
+      // Once everything has landed, drop the covers entirely so nothing sits over the page.
+      later(6420 + cardCharacters.length * 45 + 800, hideCovers);
     };
 
-    // Start once the display font is in, so the measured positions are the real ones.
+    // Start once the hero font is in, so the measured positions are the real ones.
     const begin = () => {
       frame = window.requestAnimationFrame(() => {
         frame = window.requestAnimationFrame(startTimeline);
@@ -277,74 +270,59 @@ export function SplitRevealHero({
       </div>
 
       <div className="sf-scene">
-        {/* eslint-disable-next-line @next/next/no-img-element -- full-bleed hero still, preloaded */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- full-bleed hero still, loaded eagerly at high priority */}
         <img className="sf-image" src={heroImage} alt={heroAlt} draggable={false} loading="eager" decoding="async" fetchPriority="high" />
         <div className="sf-shade" />
-        {/* No nav here — the real floating site header sits above this component. */}
+        {showNav && (
+          <div className="sf-nav" aria-hidden="true">
+            <strong>{logo}</strong>
+            <span>{menuLabel}</span>
+          </div>
+        )}
         <div className="sf-card">
           <h1 id="hero-title">
             <span aria-hidden="true">{splitWordChars(cardTitle)}</span>
-            <span className="sr-only">
-              {cardTitle} — {studio} and Lawn Services, irrigation repair and lawn care in Davenport, FL
-            </span>
+            <span className="sr-only">{cardTitle} — irrigation repair, lawn care and water conservation in Davenport, FL</span>
           </h1>
         </div>
-        <footer className="sf-footer">
+        <div className="sf-footer">
           <span>{footerLeft}</span>
           <span>{footerRight}</span>
-        </footer>
+        </div>
       </div>
     </section>
   );
 }
 
-export function Hero() {
-  return <SplitRevealHero />;
-}
-
 const styles = `
-.sf-root, .sf-root * { box-sizing: border-box; }
-.sf-root { position: relative; width: 100%; height: 100svh; min-height: 560px; overflow: hidden; isolation: isolate; background: #0a0a0a; color: #fff; font-family: var(--font-sans), Arial, sans-serif; }
-.sf-root .sf-display, .sf-root h1, .sf-root p { margin: 0; text-transform: uppercase; }
-.sf-cover, .sf-tags, .sf-scene { position: absolute; inset: 0; }
-.sf-cover { z-index: 4; overflow: hidden; background: #0a0a0a; backface-visibility: hidden; transform: translate3d(0,0,0); will-change: transform, clip-path; contain: layout paint; }
-.sf-bottom { z-index: 3; }
-.sf-top { z-index: 4; }
-.sf-tags { z-index: 5; pointer-events: none; }
-.sf-intro, .sf-number { position: absolute; top: 50%; left: 50%; transform: translate3d(-50%,-50%,0); }
-.sf-intro { width: 100%; text-align: center; white-space: nowrap; }
-.sf-number { left: calc(50% + 10rem); white-space: nowrap; }
-.sf-intro .sf-display, .sf-number .sf-display { font-family: var(--font-display), Arial, sans-serif; font-size: clamp(1.5rem,6.3vw,6rem); font-weight: 600; line-height: 1; letter-spacing: -0.04em; }
-.sf-char { display: inline-block; overflow: hidden; vertical-align: top; backface-visibility: hidden; will-change: transform, font-size; }
-.sf-char > span { display: inline-block; backface-visibility: hidden; will-change: transform; }
-.sf-cover .sf-intro .sf-char > span, .sf-cover .sf-number .sf-char > span { transform: translate3d(0,-130%,0); }
-.sf-first { transform-origin: top left; }
-.sf-tag { position: absolute; width: max-content; overflow: hidden; color: #7a7a72; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; }
-.sf-word { display: inline-block; transform: translate3d(0,-130%,0); backface-visibility: hidden; will-change: transform; }
-.sf-tag-1 { top: 15%; left: 15%; }
-.sf-tag-2 { bottom: 15%; left: 25%; }
-.sf-tag-3 { right: 15%; bottom: 30%; }
-.sf-scene { z-index: 2; overflow: hidden; clip-path: polygon(0 48%,0 48%,0 52%,0 52%); backface-visibility: hidden; transform: translate3d(0,0,0); will-change: clip-path; contain: layout paint; }
-.sf-image, .sf-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
-.sf-image { object-fit: cover; transform: translate3d(0,0,0) scale(1.001); backface-visibility: hidden; }
-.sf-shade { background: linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.04) 45%, rgba(0,0,0,.35)); }
-.sf-footer { position: absolute; left: 0; bottom: 0; z-index: 2; display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 1rem; padding: 2rem; text-transform: uppercase; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; }
-.sf-card { position: absolute; top: 50%; left: 50%; z-index: 2; display: flex; width: min(30%,520px); height: 70%; align-items: center; justify-content: center; overflow: hidden; transform: translate3d(-50%,-50%,0); background: #F7F4EE; border-radius: 1.75rem; clip-path: inset(50% 0); backface-visibility: hidden; will-change: clip-path; contain: layout paint; box-shadow: 0 30px 80px -30px rgba(0,0,0,.45); }
-.sf-card h1 { width: 100%; text-align: center; color: var(--brand-sampled, #2F5233); font-family: var(--font-display), Arial, sans-serif; font-size: clamp(1.8rem,2.6vw,2.6rem); font-weight: 800; letter-spacing: -0.05em; line-height: 1.05; padding: 0 1.5rem; }
-.sf-card .sf-char > span { transform: translate3d(0,130%,0); }
-.sf-wordwrap { display: inline-block; white-space: nowrap; }
-@media (max-width: 1000px) {
-  .sf-number { left: calc(50% + 4rem); }
-  .sf-card { width: 75%; }
-  .sf-footer { padding: 1.4rem; }
-  .sf-tag-1 { left: 8%; } .sf-tag-2 { left: 12%; } .sf-tag-3 { right: 8%; }
-}
-@media (max-width: 560px) {
-  .sf-root { min-height: 540px; }
-  .sf-card { width: 78%; height: 64%; }
-  .sf-card h1 { font-size: clamp(2rem, 10vw, 2.6rem); }
-  .sf-footer { padding: 1rem; font-size: 11px; }
-  .sf-tag { font-size: 10px; }
-  .sf-tag-1 { top: 18%; left: 7%; } .sf-tag-2 { bottom: 18%; left: 10%; } .sf-tag-3 { right: 7%; bottom: 26%; }
-}
+.sf-root,.sf-root *{box-sizing:border-box;}
+.sf-root{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;isolation:isolate;background:#1f3d2b;color:#fff;font-family:var(--font-dm-sans),"Helvetica Neue",Arial,sans-serif;}
+.sf-root .sf-display,.sf-root h1,.sf-root p{margin:0;text-transform:uppercase;}
+.sf-cover,.sf-tags,.sf-scene{position:absolute;inset:0;}
+.sf-cover{z-index:4;overflow:hidden;background:#1f3d2b;backface-visibility:hidden;transform:translate3d(0,0,0);will-change:transform,clip-path;contain:layout paint;}
+.sf-bottom{z-index:3;} .sf-top{z-index:4;}
+.sf-tags{z-index:5;pointer-events:none;}
+.sf-intro,.sf-number{position:absolute;top:50%;left:50%;transform:translate3d(-50%,-50%,0);white-space:nowrap;}
+.sf-intro{width:100%;text-align:center;}
+.sf-number{left:calc(50% + 10rem);}
+.sf-intro .sf-display,.sf-number .sf-display{font-size:clamp(1.5rem,6.3vw,6rem);font-weight:600;line-height:1;letter-spacing:-0.02em;}
+.sf-char{display:inline-block;overflow:hidden;vertical-align:top;backface-visibility:hidden;will-change:transform,font-size;}
+.sf-char > span{display:inline-block;backface-visibility:hidden;will-change:transform;}
+.sf-cover .sf-intro .sf-char > span,.sf-cover .sf-number .sf-char > span{transform:translate3d(0,-110%,0);}
+.sf-first{transform-origin:top left;}
+.sf-tag{position:absolute;width:max-content;overflow:hidden;color:#e9efe3;opacity:.7;font-size:13px;font-weight:500;letter-spacing:.06em;}
+.sf-word{display:inline-block;transform:translate3d(0,-110%,0);backface-visibility:hidden;will-change:transform;}
+.sf-tag-1{top:15%;left:15%;} .sf-tag-2{bottom:15%;left:25%;} .sf-tag-3{right:15%;bottom:30%;}
+.sf-scene{z-index:2;overflow:hidden;clip-path:polygon(0 48%,0 48%,0 52%,0 52%);backface-visibility:hidden;transform:translate3d(0,0,0);will-change:clip-path;contain:layout paint;}
+.sf-image,.sf-shade{position:absolute;inset:0;width:100%;height:100%;}
+.sf-image{object-fit:cover;transform:translate3d(0,0,0) scale(1.001);backface-visibility:hidden;}
+.sf-shade{background:linear-gradient(180deg,rgba(31,61,43,.45),rgba(31,61,43,.06) 45%,rgba(31,61,43,.5));}
+.sf-nav,.sf-footer{position:absolute;left:0;z-index:2;display:flex;width:100%;align-items:center;justify-content:space-between;gap:1rem;padding:2rem;text-transform:uppercase;font-size:13px;font-weight:500;letter-spacing:.06em;}
+.sf-nav{top:0;} .sf-nav strong{font-size:20px;} .sf-footer{bottom:0;}
+.sf-card{position:absolute;top:50%;left:50%;z-index:2;display:flex;width:min(34%,560px);height:60%;align-items:center;justify-content:center;overflow:hidden;transform:translate3d(-50%,-50%,0);background:#f6f2e8;clip-path:inset(50% 0);backface-visibility:hidden;will-change:clip-path;contain:layout paint;padding:1rem;text-align:center;}
+.sf-card h1{width:100%;text-align:center;color:#1f3d2b;font-family:var(--font-dm-sans),"Helvetica Neue",Arial,sans-serif;font-size:clamp(1.9rem,3vw,2.7rem);font-weight:600;letter-spacing:-0.02em;line-height:1.05;}
+.sf-card .sf-char > span{transform:translate3d(0,110%,0);}
+.sf-wordwrap{display:inline-block;white-space:nowrap;}
+@media (max-width:1000px){.sf-number{left:calc(50% + 4rem);} .sf-card{width:75%;} .sf-nav,.sf-footer{padding:1.4rem;} .sf-tag-1{left:8%;} .sf-tag-2{left:12%;} .sf-tag-3{right:8%;}}
+@media (max-width:560px){.sf-card{width:80%;height:56%;} .sf-card h1{font-size:clamp(1.7rem,9vw,2.4rem);} .sf-footer{padding:1rem;font-size:11px;} .sf-tag{font-size:10px;}}
 `;

@@ -1,32 +1,44 @@
 @import "tailwindcss";
-@import "./brand-color.generated.css";
+
+/* Brand palette — the only colours the site uses. */
+:root {
+  --green-dark: #1f3d2b;
+  --green: #2e5b3f;
+  --green-mid: #3f7a52;
+  --green-light: #e9efe3;
+  --cream: #f6f2e8;
+  --tan: #c9a876;
+  /* Legacy alias: older components read the logo-sampled green; it now resolves to the palette. */
+  --brand-sampled: var(--green);
+}
 
 @theme inline {
-  --font-display: var(--font-bricolage), "Helvetica Neue", Arial, sans-serif;
-  --font-sans: var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif;
+  /* Inter for everything; DM Sans is reserved for the split-reveal hero. */
+  --font-display: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-hero: var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif;
 
-  /* Brand green is sampled from the real logo at build time (see scripts/fetch-logo.mjs). */
-  --color-brand: var(--brand-sampled);
-  --color-forest: color-mix(in oklab, var(--brand-sampled) 78%, #10150f);
-  --color-forest-deep: color-mix(in oklab, var(--brand-sampled) 48%, #0d110c);
-  --color-leaf: color-mix(in oklab, var(--brand-sampled) 55%, #9ccf86);
-  --color-mist: color-mix(in oklab, var(--brand-sampled) 10%, #f7f4ee);
+  --color-brand: var(--green);
+  --color-forest: var(--green);
+  --color-forest-deep: var(--green-dark);
+  --color-leaf: var(--green-mid);
+  --color-mist: var(--green-light);
 
-  --color-sand: #c9a876;
-  --color-sand-soft: #e7d9bf;
-  --color-cream: #f7f4ee;
-  --color-parchment: #efe9dd;
-  --color-charcoal: #22261f;
-  --color-ink: #2b2e28;
-  --color-stone: #62665d;
-  --color-water: #7fb8c9;
+  --color-sand: var(--tan);
+  --color-sand-soft: color-mix(in oklab, var(--tan) 45%, var(--cream));
+  --color-cream: var(--cream);
+  --color-parchment: var(--green-light);
+  --color-charcoal: var(--green-dark);
+  --color-ink: var(--green-dark);
+  --color-stone: var(--green-mid);
+  --color-water: var(--green-mid);
 
   --radius-card: 1.75rem;
   --radius-xl2: 1.25rem;
 
-  --shadow-soft: 0 1px 2px rgb(34 38 31 / 0.04), 0 8px 24px -8px rgb(34 38 31 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(34 38 31 / 0.06), 0 22px 44px -16px rgb(34 38 31 / 0.28);
-  --shadow-glow: 0 18px 40px -14px color-mix(in oklab, var(--brand-sampled) 65%, transparent);
+  --shadow-soft: 0 1px 2px rgb(31 61 43 / 0.04), 0 8px 24px -8px rgb(31 61 43 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(31 61 43 / 0.06), 0 22px 44px -16px rgb(31 61 43 / 0.28);
+  --shadow-glow: 0 18px 40px -14px color-mix(in oklab, var(--green) 65%, transparent);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -54,8 +66,8 @@
     overflow-x: clip;
   }
   ::selection {
-    background: color-mix(in oklab, var(--brand-sampled) 30%, #f7f4ee);
-    color: var(--color-charcoal);
+    background: var(--green-light);
+    color: var(--green-dark);
   }
   :focus-visible {
     outline: 2px solid var(--color-sand);
@@ -70,8 +82,7 @@
     letter-spacing: -0.05em;
     line-height: 0.98;
     text-wrap: balance;
-    font-variation-settings: "opsz" 96;
-  }
+      }
   h3, h4 {
     font-family: var(--font-display);
     font-weight: 650;
@@ -179,7 +190,7 @@
   .btn-outline-dark {
     background: transparent;
     color: var(--color-charcoal);
-    box-shadow: inset 0 0 0 1px rgb(34 38 31 / 0.18);
+    box-shadow: inset 0 0 0 1px rgb(31 61 43 / 0.18);
   }
   .btn-outline-dark:hover {
     background: #fff;
@@ -221,17 +232,17 @@
     width: 100%;
     border-radius: 1rem;
     background: #fff;
-    border: 1px solid rgb(34 38 31 / 0.12);
+    border: 1px solid rgb(31 61 43 / 0.12);
     padding: 0.95rem 1.05rem;
     font-size: 1rem;
     color: var(--color-ink);
     transition: border-color 0.2s ease, box-shadow 0.25s ease;
   }
-  .field::placeholder { color: rgb(98 102 93 / 0.7); }
+  .field::placeholder { color: rgb(63 122 82 / 0.7); }
   .field:focus {
     outline: none;
     border-color: var(--color-brand);
-    box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand-sampled) 18%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--green) 18%, transparent);
   }
   .field[aria-invalid="true"] {
     border-color: #b4533d;
@@ -322,7 +333,7 @@
   transition: background-color 0.2s ease;
 }
 .map-zoom button + button {
-  border-top: 1px solid rgb(34 38 31 / 0.08);
+  border-top: 1px solid rgb(31 61 43 / 0.08);
 }
 .map-zoom button:hover {
   background: var(--color-mist);
@@ -355,7 +366,7 @@
   border: none !important;
 }
 .service-map .leaflet-control-attribution {
-  background: rgb(247 244 238 / 0.85) !important;
+  background: rgb(246 242 232 / 0.85) !important;
   border-radius: 999px 0 0 0;
   font-size: 10px;
   padding: 2px 8px !important;
@@ -397,7 +408,7 @@
   height: 18px;
   border-radius: 999px;
   background: var(--color-forest);
-  box-shadow: 0 0 0 4px #fff, 0 6px 16px rgb(34 38 31 / 0.35);
+  box-shadow: 0 0 0 4px #fff, 0 6px 16px rgb(31 61 43 / 0.35);
   transition: transform 0.35s var(--ease-out-soft);
 }
 .map-pin:hover span,
@@ -408,11 +419,11 @@
   background: var(--color-sand);
 }
 .map-pin-you.is-out span {
-  box-shadow: 0 0 0 5px var(--color-sand), 0 6px 16px rgb(34 38 31 / 0.35);
+  box-shadow: 0 0 0 5px var(--color-sand), 0 6px 16px rgb(31 61 43 / 0.35);
 }
 .map-pin-you span {
   background: #fff;
-  box-shadow: 0 0 0 5px var(--color-charcoal), 0 6px 16px rgb(34 38 31 / 0.35);
+  box-shadow: 0 0 0 5px var(--color-charcoal), 0 6px 16px rgb(31 61 43 / 0.35);
 }
 @keyframes pulse-ring {
   0% { transform: scale(0.6); opacity: 0.7; }
@@ -473,3 +484,30 @@
 @media (prefers-reduced-motion: reduce) {
   .drift-a, .drift-b, .drift-c { animation: none; }
 }
+
+/* ---------- ArrowButton: the site-wide CTA ---------- */
+/* Kept in the components layer so Tailwind utilities (e.g. `hidden sm:inline-flex`) can still override it. */
+@layer components {
+  .arrow-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 26px;border-radius:999px;background:#2e5b3f;color:#fff;font-weight:600;font-size:14px;line-height:1;overflow:hidden;border:none;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background-color .3s ease,box-shadow .35s ease;}
+  .arrow-btn:hover{background:#1f3d2b;box-shadow:0 14px 30px -14px rgb(31 61 43 / .55);}
+  .arrow-btn.light{background:#fff;color:#1f3d2b;}
+  .arrow-btn.light:hover{background:#e9efe3;}
+  .arrow-btn .arrow-wrap{position:relative;flex-shrink:0;width:16px;height:16px;overflow:hidden;}
+  .arrow-btn svg{position:absolute;top:0;left:0;width:16px;height:16px;transition:transform .35s ease;}
+  .arrow-btn svg.a2{transform:translate(-20px,20px);}
+  .arrow-btn:hover svg.a1,.arrow-btn:focus-visible svg.a1{transform:translate(20px,-20px);}
+  .arrow-btn:hover svg.a2,.arrow-btn:focus-visible svg.a2{transform:translate(0,0);}
+  @media (prefers-reduced-motion: reduce){.arrow-btn svg{transition:none;}}
+}
+
+/* ---------- "Protect Your Lawn": layered green with drifting light ---------- */
+.protect{position:relative;isolation:isolate;padding:160px 6vw;background:radial-gradient(ellipse at 30% 20%,#3a6b4a 0%,#2e5b3f 45%,#1f3d2b 100%);overflow:hidden;text-align:center;color:#fff;}
+.protect::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.18;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.protect > :not(.blob){position:relative;z-index:1;}
+.blob{position:absolute;z-index:0;border-radius:50%;filter:blur(60px);opacity:.35;pointer-events:none;animation:drift 22s ease-in-out infinite;}
+.blob1{width:420px;height:420px;background:#7fd99a;top:-120px;left:-100px;}
+.blob2{width:340px;height:340px;background:#0f2b1a;bottom:-140px;right:-80px;animation-delay:-8s;}
+.blob3{width:260px;height:260px;background:#c9a876;top:40%;right:15%;animation-delay:-15s;opacity:.22;}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(40px,-30px) scale(1.08);}66%{transform:translate(-30px,20px) scale(.95);}}
+@media (max-width:768px){.protect{padding:110px 6vw;}}
+@media (prefers-reduced-motion: reduce){.blob{animation:none;}}

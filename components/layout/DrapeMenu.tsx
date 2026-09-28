@@ -11,9 +11,8 @@ const CX = W / 2;
 const LINKS = [
   { label: "services", href: "/#services" },
   { label: "our work", href: "/#work" },
-  { label: "about", href: "/#about" },
+  { label: "program", href: "/#maintenance" },
   { label: "reviews", href: "/#reviews" },
-  { label: "service area", href: "/#service-area" },
   { label: "get a quote", href: "/#quote" },
 ];
 
@@ -67,15 +66,15 @@ const css = `
   .dm-toggle[aria-expanded="true"] .dm-toggle-open{opacity:0;}
   .dm-toggle[aria-expanded="true"] .dm-toggle-close{opacity:1;transition-delay:.25s;}
 
-  .dm-menu{position:fixed;inset:0;z-index:0;isolation:isolate;padding:6.5rem 2.5rem 2.5rem;display:flex;gap:2rem;color:#14130f;pointer-events:none;overflow:hidden;
+  .dm-menu{position:fixed;inset:0;z-index:0;isolation:isolate;padding:6.5rem 2.5rem 2.5rem;display:flex;gap:2rem;color:#1f3d2b;pointer-events:none;overflow:hidden;
     font-family:var(--font-sans),"Helvetica Neue",Arial,sans-serif;-webkit-user-select:none;user-select:none;}
   .dm-menu.is-open{pointer-events:all;}
   .dm-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;}
   .dm-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;min-width:0;}
-  .dm-info .dm-kicker{text-transform:uppercase;font-size:.7rem;font-weight:700;letter-spacing:.25em;color:var(--brand-sampled,#2F5233);margin:0 0 1rem;}
+  .dm-info .dm-kicker{text-transform:uppercase;font-size:.7rem;font-weight:700;letter-spacing:.25em;color:var(--green);margin:0 0 1rem;}
   .dm-info .dm-lg{font-family:var(--font-display),Arial,sans-serif;font-weight:600;letter-spacing:-.03em;font-size:clamp(1.15rem,2.3vw,2.2rem);line-height:1.3;margin:0;overflow-wrap:anywhere;}
   .dm-info .dm-lg a{color:inherit;text-decoration:none;}
-  .dm-info .dm-sm{font-weight:400;font-size:clamp(1rem,1.25vw,1.3rem);line-height:1.3;margin:0;color:#4a4438;}
+  .dm-info .dm-sm{font-weight:400;font-size:clamp(1rem,1.25vw,1.3rem);line-height:1.3;margin:0;color:#3f7a52;}
   .dm-info .dm-gap{height:1.2rem;}
   .dm-info .dm-kicker,.dm-info .dm-lg,.dm-info .dm-sm{opacity:0;transform:translateY(100px);transition:opacity .6s ease, transform .75s cubic-bezier(.16,1,.3,1);}
   .dm-menu.is-open .dm-info .dm-kicker{transition-delay:.5s;}
@@ -85,9 +84,9 @@ const css = `
   .dm-menu.is-open .dm-info .dm-sm:nth-of-type(5){transition-delay:.78s;}
   .dm-menu.is-open .dm-info .dm-kicker,.dm-menu.is-open .dm-info .dm-lg,.dm-menu.is-open .dm-info .dm-sm{opacity:1;transform:translateY(0);}
   .dm-links{align-items:flex-end;}
-  .dm-links a{text-decoration:none;color:#14130f;font-family:var(--font-display),Arial,sans-serif;font-weight:800;letter-spacing:-.05em;
+  .dm-links a{text-decoration:none;color:#1f3d2b;font-family:var(--font-display),Arial,sans-serif;font-weight:800;letter-spacing:-.05em;
     font-size:clamp(2.3rem,5vw,4.8rem);line-height:1.18;display:block;width:max-content;max-width:100%;}
-  .dm-links a:hover .dm-char,.dm-links a:focus-visible .dm-char{color:var(--brand-sampled,#2F5233);}
+  .dm-links a:hover .dm-char,.dm-links a:focus-visible .dm-char{color:var(--green);}
   .dm-char{display:inline-block;white-space:pre;transform:translateX(760%);opacity:0;transition:transform 1.15s cubic-bezier(.2,1.35,.28,1), opacity .55s ease, color .25s ease;}
   .dm-menu.is-open .dm-char{transform:translateX(0);opacity:1;}
   @media (max-width:1000px){ .dm-menu{flex-direction:column-reverse;padding:6rem 1.5rem 2rem;gap:1.5rem;} .dm-links{flex:1.5;align-items:flex-start;} .dm-col{flex:none;} .dm-links{justify-content:flex-start;} }
@@ -172,7 +171,7 @@ export function DrapeOverlay({ open, onNavigate, onSettled }: { open: boolean; o
     <div id="site-menu" className={`dm-menu${open ? " is-open" : ""}`} inert={!open} aria-hidden={!open}>
       <style>{css}</style>
       <svg className="dm-bg" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden>
-        <path ref={pathRef} d={HIDDEN} fill="#F7F4EE" />
+        <path ref={pathRef} d={HIDDEN} fill="#f6f2e8" />
       </svg>
 
       <div className="dm-col dm-info">

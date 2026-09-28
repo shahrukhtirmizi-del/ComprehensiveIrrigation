@@ -1,19 +1,32 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { business, navLinks } from "@/lib/site";
+import { business } from "@/lib/site";
 import { CopyrightYear } from "./CopyrightYear";
+import { ChromaticFooter } from "@/components/ChromaticFooter";
+import { ArrowButton } from "@/components/ArrowButton";
+import { QuoteLink } from "@/components/ui/QuoteLink";
 import { MailIcon, PhoneIcon } from "@/components/ui/Icons";
+
+// Each links to the quote form with that service already chosen.
+const services = [
+  { label: "Irrigation Repair", service: "Irrigation Repair" },
+  { label: "Irrigation Installation", service: "Irrigation Installation" },
+  { label: "Sprinkler Optimization", service: "Sprinkler System Repair & Optimization" },
+  { label: "Lawn Care", service: "Lawn Care" },
+  { label: "Palm Tree Care", service: "Palm Tree Care" },
+  { label: "Outdoor Lighting", service: "Professional Outdoor Lighting" },
+];
 
 export function Footer() {
   return (
-    <footer className="bg-charcoal text-white/80">
+    <ChromaticFooter className="bg-[#0d150f] text-white/80">
       <div className="container-x py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-3">
+          <div className="md:col-span-4">
             <Logo size={64} tone="light" />
             <p className="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-white/65">
-              Irrigation, lawn care and landscape services for Champions Gate, Celebration, Haines City, Davenport,
-              Four Corners, FL and surrounding areas.
+              Irrigation, lawn care and landscape services for Champions Gate, Celebration, Haines City, Davenport, Four
+              Corners, FL and surrounding areas. Over {business.yearsInIndustry} years in the green industry.
             </p>
             <p className="mt-5 text-sm text-white/55">
               Fully licensed &amp; insured · License {business.license}
@@ -22,27 +35,30 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="md:col-span-2">
-            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-sand">Explore</h2>
+          <div className="md:col-span-3">
+            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-sand">Services</h2>
             <ul className="mt-5 space-y-3 text-[0.95rem]">
-              {navLinks.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="nav-link hover:text-white">
-                    {l.label}
-                  </Link>
+              {services.map((s) => (
+                <li key={s.label}>
+                  <QuoteLink service={s.service} className="nav-link hover:text-white">
+                    {s.label}
+                  </QuoteLink>
                 </li>
               ))}
-              <li>
-                <Link href="/#quote" className="nav-link hover:text-white">
-                  Free Quote
-                </Link>
-              </li>
             </ul>
           </div>
 
-          <div className="md:col-span-4">
-            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-sand">Contact</h2>
-            <ul className="mt-5 space-y-3 text-[0.95rem]">
+          <div className="md:col-span-5">
+            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-sand">Get in touch</h2>
+            <p className="mt-5 max-w-md font-display text-[clamp(1.6rem,2.6vw,2.2rem)] font-bold leading-tight tracking-[-0.04em] text-white">
+              Ready to stop wasting water?
+            </p>
+            <div className="mt-6">
+              <ArrowButton href="/#quote" light>
+                Get a Free Quote
+              </ArrowButton>
+            </div>
+            <ul className="mt-8 space-y-3 text-[0.95rem]">
               <li>
                 <a href={business.phoneHref} className="inline-flex items-center gap-2 hover:text-white">
                   <PhoneIcon className="h-4 w-4 text-sand" />
@@ -56,16 +72,10 @@ export function Footer() {
                 </a>
               </li>
             </ul>
-            <h2 className="mt-8 font-sans text-xs font-bold uppercase tracking-[0.18em] text-sand">We accept</h2>
-            <p className="mt-3 text-sm text-white/65">{business.payments.join(" · ")}</p>
-          </div>
-
-          <div className="md:col-span-3">
-            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-sand">Hours</h2>
-            <dl className="mt-5 space-y-2 text-[0.95rem]">
+            <dl className="mt-6 grid max-w-sm gap-1.5 text-sm">
               {business.hours.map((h) => (
-                <div key={h.days} className="flex justify-between gap-4 border-b border-white/10 pb-2">
-                  <dt className="text-white/60">{h.days}</dt>
+                <div key={h.days} className="flex justify-between gap-4">
+                  <dt className="text-white/55">{h.days}</dt>
                   <dd className="text-right">{h.time}</dd>
                 </div>
               ))}
@@ -91,6 +101,6 @@ export function Footer() {
           </ul>
         </div>
       </div>
-    </footer>
+    </ChromaticFooter>
   );
 }

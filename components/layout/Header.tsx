@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
@@ -8,6 +7,7 @@ import { DrapeOverlay, DrapeToggle } from "./DrapeMenu";
 import { business } from "@/lib/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { PhoneIcon } from "@/components/ui/Icons";
+import { ArrowButton } from "@/components/ArrowButton";
 
 export function Header() {
   const pathname = usePathname();
@@ -106,9 +106,9 @@ export function Header() {
               <PhoneIcon className="h-4 w-4" />
               <span className="nav-link">{business.phone}</span>
             </a>
-            <Link href="/#quote" onClick={() => open && navigate()} className="btn btn-primary hidden !px-5 !py-3 text-sm sm:inline-flex">
+            <ArrowButton href="/#quote" onClick={() => open && navigate()} className="hidden !px-5 !py-3 sm:inline-flex">
               Get a Free Quote
-            </Link>
+            </ArrowButton>
             <DrapeToggle open={open} onToggle={toggle} light={light} buttonRef={toggleRef} />
           </div>
         </div>
