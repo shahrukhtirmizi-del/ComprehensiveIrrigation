@@ -180,7 +180,7 @@ export function QuoteForm() {
               Free Quote
             </p>
             <h2 id="quote-title" data-split className="mt-4 font-display text-[clamp(2.4rem,5vw,4rem)] leading-[1.02] text-charcoal">
-              Tell us about your <em className="italic text-forest">property.</em>
+              Tell us about your <em className="text-forest">property.</em>
             </h2>
             <p className="mt-5 max-w-md text-[1.05rem] leading-relaxed text-stone" data-reveal>
               A few details and we&apos;ll get back to you with a no-obligation quote. Prefer to talk? We pick up the

@@ -102,7 +102,7 @@ export function WaterCallout() {
                       y="372"
                       textAnchor="middle"
                       fontSize="410"
-                      style={{ fontFamily: "var(--font-fraunces)", fontWeight: 500, letterSpacing: "-0.04em" }}
+                      style={{ fontFamily: "var(--font-bricolage)", fontWeight: 800, letterSpacing: "-0.06em" }}
                     >
                       30%
                     </text>
@@ -122,7 +122,7 @@ export function WaterCallout() {
                   textAnchor="middle"
                   fontSize="410"
                   fill="rgb(255 255 255 / 0.07)"
-                  style={{ fontFamily: "var(--font-fraunces)", fontWeight: 500, letterSpacing: "-0.04em" }}
+                  style={{ fontFamily: "var(--font-bricolage)", fontWeight: 800, letterSpacing: "-0.06em" }}
                 >
                   30%
                 </text>
@@ -138,7 +138,7 @@ export function WaterCallout() {
 
             <div className="-mt-2 max-w-2xl md:-mt-3">
               <p data-callout-line className="font-display text-[clamp(1.6rem,3.6vw,2.6rem)] leading-tight">
-                Irrigation repair reduces up to <span className="italic text-sand-soft">30%</span> of water waste.
+                Irrigation repair reduces up to <span className="text-sand-soft">30%</span> of water waste.
               </p>
               <p data-callout-line className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/65 md:text-lg">
                 Leaking valves, cracked heads and zones watering the sidewalk quietly pour money down the drain. We find

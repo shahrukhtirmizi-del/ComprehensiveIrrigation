@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { MotionController } from "@/components/providers/MotionController";
@@ -9,17 +9,18 @@ import { CookieConsent } from "@/components/layout/CookieConsent";
 import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
 import { SITE_URL, business } from "@/lib/site";
 
-const fraunces = Fraunces({
+// Display: Bricolage Grotesque (bold, tightly tracked). Body: DM Sans.
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  style: ["normal", "italic"],
-  axes: ["opsz", "SOFT"],
+  variable: "--font-bricolage",
+  axes: ["opsz", "wdth"],
   display: "swap",
 });
 
-const manrope = Manrope({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-dm-sans",
+  axes: ["opsz"],
   display: "swap",
 });
 
@@ -87,7 +88,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-US" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="en-US" className={`${bricolage.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
         {/* Marks JS as available so reveal animations can hide content up-front without hurting no-JS visitors. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

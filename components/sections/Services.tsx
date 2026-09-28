@@ -293,7 +293,7 @@ export function Services() {
               Services
             </p>
             <h2 id="services-title" data-split className="mt-4 font-display text-[clamp(2.4rem,5.5vw,4.25rem)] leading-[1.02] text-charcoal">
-              Everything your landscape needs — starting with the <em className="italic text-forest">water.</em>
+              Everything your landscape needs — starting with the <em className="text-forest">water.</em>
             </h2>
           </div>
           <p className="text-[1.05rem] leading-relaxed text-stone md:col-span-5 md:pb-2" data-reveal>

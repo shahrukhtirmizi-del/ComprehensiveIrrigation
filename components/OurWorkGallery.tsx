@@ -430,7 +430,7 @@ export default function OurWorkGallery() {
               Our Work
             </p>
             <h2 id="work-title" data-split className="mt-4 font-display text-[clamp(2.4rem,5.2vw,4rem)] leading-[1.02] text-charcoal">
-              Recent work across <em className="italic text-forest">Central Florida.</em>
+              Recent work across <em className="text-forest">Central Florida.</em>
             </h2>
           </div>
           <p className="text-[1.02rem] leading-relaxed text-stone md:col-span-5 md:pb-2" data-reveal>

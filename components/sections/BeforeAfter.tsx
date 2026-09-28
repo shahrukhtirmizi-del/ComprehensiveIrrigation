@@ -50,7 +50,7 @@ export function BeforeAfter() {
             Results
           </p>
           <h2 id="results-title" data-split className="mt-4 font-display text-[clamp(2.6rem,6vw,4.6rem)] leading-[1] text-charcoal">
-            See the <em className="italic text-forest">Difference.</em>
+            See the <em className="text-forest">Difference.</em>
           </h2>
           <p className="mt-5 text-[1.05rem] leading-relaxed text-stone" data-reveal>
             Patchy, weed-choked turf on one side. Dense, even, properly watered lawn on the other. Drag the handle to

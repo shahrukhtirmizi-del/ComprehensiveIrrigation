@@ -18,7 +18,7 @@ export default function NotFound() {
           </span>
           <p className="eyebrow mt-8">Error 404</p>
           <h1 className="mt-4 font-display text-[clamp(2.6rem,7vw,4.8rem)] leading-[1] text-charcoal">
-            This page <em className="italic text-forest">dried up.</em>
+            This page <em className="text-forest">dried up.</em>
           </h1>
           <p className="mx-auto mt-5 max-w-md text-[1.05rem] leading-relaxed text-stone">
             The page you&apos;re looking for doesn&apos;t exist or has moved. Let&apos;s get you back to greener ground.
