@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 interface RevealTextProps {
@@ -13,6 +14,8 @@ interface RevealTextProps {
   overlayDuration?: number;
   springDuration?: number;
   letterImages?: string[];
+  /** Photo behind the word, under a dark green wash. */
+  backgroundImage?: string;
 }
 
 /**
@@ -38,6 +41,7 @@ export function RevealText({
     "/images/gallery-8.jpg",
     "/images/gallery-5.jpg",
   ],
+  backgroundImage = "/images/gallery-7.jpg",
 }: RevealTextProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
@@ -57,6 +61,10 @@ export function RevealText({
       aria-label={text}
       className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#1f3d2b]"
     >
+      <div className="absolute inset-0" aria-hidden="true">
+        <Image src={backgroundImage} alt="" fill sizes="100vw" quality={70} className="object-cover" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgb(31_61_43/0.62),rgb(31_61_43/0.9)_75%)]" />
+      </div>
       <div ref={ref} className="relative flex items-center justify-center px-4" aria-hidden="true">
         <div className="flex">
           {text.split("").map((letter, index) => (

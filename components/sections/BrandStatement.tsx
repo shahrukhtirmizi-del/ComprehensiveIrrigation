@@ -1,13 +1,18 @@
+import Image from "next/image";
 import { MorphingText } from "@/components/ui/MorphingText";
 
 /**
- * "Protect Your Lawn": full-width brand statement. Layered radial green, film grain and three slowly
- * drifting blurred blobs (CSS only — see .protect / .blob in globals.css) behind the gooey word-morph.
+ * "Protect Your Lawn": full-width brand statement. A lawn photo under a layered green wash, film grain
+ * and three slowly drifting blurred blobs (CSS only — see .protect / .blob in globals.css) behind the
+ * gooey word-morph.
  */
 export function BrandStatement() {
   return (
     <section aria-labelledby="statement-title" className="p-2 md:p-3">
       <div className="protect rounded-[1.75rem] md:rounded-[2.25rem]">
+        <div className="protect-bg" aria-hidden="true">
+          <Image src="/images/after-manicured-lawn.jpg" alt="" fill sizes="100vw" quality={70} />
+        </div>
         <div className="blob blob1" aria-hidden="true" />
         <div className="blob blob2" aria-hidden="true" />
         <div className="blob blob3" aria-hidden="true" />

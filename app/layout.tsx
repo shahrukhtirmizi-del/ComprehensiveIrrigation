@@ -89,8 +89,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en-US" className={`${inter.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
-        {/* Marks JS as available so reveal animations can hide content up-front without hurting no-JS visitors. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {/* Marks JS as available so reveal animations can hide content up-front without hurting no-JS visitors,
+            and decides before first paint whether the homepage intro should be skipped (already seen this
+            session, reduced motion, or a deep link like /#quote) so its overlay never flashes. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('ci-intro-seen')||location.hash||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-skip')}catch(e){}})()",
+          }}
+        />
         <LocalBusinessJsonLd />
       </head>
       <body>

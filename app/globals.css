@@ -497,13 +497,21 @@
   .arrow-btn svg.a2{transform:translate(-20px,20px);}
   .arrow-btn:hover svg.a1,.arrow-btn:focus-visible svg.a1{transform:translate(20px,-20px);}
   .arrow-btn:hover svg.a2,.arrow-btn:focus-visible svg.a2{transform:translate(0,0);}
+  /* Bare: no pill — label + sliding arrow, with an underline that draws in on hover. */
+  .arrow-btn.bare{padding:4px 0;border-radius:0;background:none;color:inherit;box-shadow:none;overflow:visible;}
+  .arrow-btn.bare:hover{background:none;box-shadow:none;}
+  .arrow-btn.bare .arrow-label{background:linear-gradient(currentColor,currentColor) no-repeat 100% 100% / 0 1.5px;padding-bottom:3px;transition:background-size .5s var(--ease-out-soft);}
+  .arrow-btn.bare:hover .arrow-label,.arrow-btn.bare:focus-visible .arrow-label{background-position:0 100%;background-size:100% 1.5px;}
   @media (prefers-reduced-motion: reduce){.arrow-btn svg{transition:none;}}
 }
 
 /* ---------- "Protect Your Lawn": layered green with drifting light ---------- */
 .protect{position:relative;isolation:isolate;padding:160px 6vw;background:radial-gradient(ellipse at 30% 20%,#3a6b4a 0%,#2e5b3f 45%,#1f3d2b 100%);overflow:hidden;text-align:center;color:#fff;}
 .protect::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.18;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-.protect > :not(.blob){position:relative;z-index:1;}
+.protect > :not(.blob):not(.protect-bg){position:relative;z-index:1;}
+.protect-bg{position:absolute;inset:0;z-index:0;}
+.protect-bg img{object-fit:cover;}
+.protect-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(58,107,74,.6) 0%,rgba(46,91,63,.74) 45%,rgba(31,61,43,.9) 100%);}
 .blob{position:absolute;z-index:0;border-radius:50%;filter:blur(60px);opacity:.35;pointer-events:none;animation:drift 22s ease-in-out infinite;}
 .blob1{width:420px;height:420px;background:#7fd99a;top:-120px;left:-100px;}
 .blob2{width:340px;height:340px;background:#0f2b1a;bottom:-140px;right:-80px;animation-delay:-8s;}
@@ -511,3 +519,14 @@
 @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(40px,-30px) scale(1.08);}66%{transform:translate(-30px,20px) scale(.95);}}
 @media (max-width:768px){.protect{padding:110px 6vw;}}
 @media (prefers-reduced-motion: reduce){.blob{animation:none;}}
+
+/* ---------- Homepage intro (IntroPreloader) ---------- */
+.ci-intro{display:none;}
+.js .ci-intro{display:block;position:fixed;inset:0;z-index:95;transition:opacity .9s var(--ease-out-soft);}
+.js.intro-skip .ci-intro{display:none;}
+.ci-intro.is-leaving{opacity:0;pointer-events:none;}
+/* The card shrinks toward the hero's media frame as the overlay fades. */
+.ci-intro .sf-card{transition:scale .9s var(--ease-out-soft);}
+.ci-intro.is-leaving .sf-card{scale:.62;}
+.ci-intro-skip{position:absolute;top:1.5rem;right:1.5rem;z-index:10;padding:.4rem .2rem;color:rgb(255 255 255 / .7);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;transition:color .3s ease;}
+.ci-intro-skip:hover,.ci-intro-skip:focus-visible{color:#fff;}

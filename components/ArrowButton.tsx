@@ -18,6 +18,7 @@ export function ArrowButton({
   children,
   href,
   light = false,
+  variant = "pill",
   className = "",
   service,
   onClick,
@@ -25,12 +26,14 @@ export function ArrowButton({
   children: ReactNode;
   href: string;
   light?: boolean;
+  /** "pill" = filled button; "bare" = just the label and arrow, no background or border (used in the header). */
+  variant?: "pill" | "bare";
   className?: string;
   service?: string;
   onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
 }) {
   const external = /^(tel:|mailto:|https?:)/.test(href);
-  const classes = `arrow-btn${light ? " light" : ""}${className ? ` ${className}` : ""}`;
+  const classes = `arrow-btn${variant === "bare" ? " bare" : light ? " light" : ""}${className ? ` ${className}` : ""}`;
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (service) window.dispatchEvent(new CustomEvent(SELECT_SERVICE_EVENT, { detail: service }));
     onClick?.(event);
@@ -41,7 +44,7 @@ export function ArrowButton({
         <Arrow className="a1" />
         <Arrow className="a2" />
       </span>
-      {children}
+      <span className="arrow-label">{children}</span>
     </>
   );
 

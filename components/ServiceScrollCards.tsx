@@ -1,6 +1,7 @@
 "use client";
 
 import React, { CSSProperties, useEffect, useRef } from "react";
+import Image from "next/image";
 
 const CSS = `
 .kex-scroll-page,.kex-scroll-page *{box-sizing:border-box;}
@@ -14,6 +15,12 @@ const CSS = `
 .kex-scroll-card{position:absolute;left:0;top:0;width:100%;height:100vh;background:var(--card-bg);color:var(--card-text);transform-origin:14% 0%;will-change:transform,opacity,filter;overflow:hidden;}
 .js .kex-scroll-card{opacity:0;}
 .kex-scroll-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 18%,rgba(255,255,255,.16),transparent 34%),radial-gradient(circle at 88% 78%,rgba(255,255,255,.08),transparent 38%);opacity:.42;pointer-events:none;}
+.kex-photo{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.kex-photo img{object-fit:cover;}
+/* Tint in the card's own green: strongest behind the title (left) and the description (bottom). */
+.kex-scroll-card .kex-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,color-mix(in srgb,var(--card-bg) 82%,transparent) 0%,transparent 48%),linear-gradient(100deg,color-mix(in srgb,var(--card-bg) 90%,transparent) 0%,color-mix(in srgb,var(--card-bg) 62%,transparent) 55%,color-mix(in srgb,var(--card-bg) 38%,transparent) 100%);}
+.kex-sticky-stage > .kex-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(31,61,43,.9) 0%,rgba(31,61,43,.62) 60%,rgba(31,61,43,.45) 100%);}
+.kex-scroll-card::before{z-index:1;}
 .kex-card-inner{position:relative;z-index:2;width:100%;height:100%;padding:clamp(38px,4vw,72px);}
 .kex-card-kicker{margin:0 0 clamp(80px,14vh,150px);color:var(--card-muted);font-size:clamp(13px,1.2vw,20px);font-weight:850;letter-spacing:.25em;text-transform:uppercase;}
 .kex-card-title{margin:0;max-width:12ch;font-family:inherit;font-size:clamp(38px,6vw,88px);font-weight:900;line-height:.95;letter-spacing:-.04em;text-transform:uppercase;color:inherit;}
@@ -30,14 +37,14 @@ const CSS = `
 }
 `;
 
-type Card = { number: string; kicker: string; title: string; description: string; bg: string; text: string; muted: string; numberColor: string };
+type Card = { number: string; kicker: string; title: string; description: string; image: string; bg: string; text: string; muted: string; numberColor: string };
 type CardStyle = CSSProperties & { "--card-bg": string; "--card-text": string; "--card-muted": string; "--card-number": string };
 
 const cards: Card[] = [
-  { number: "01", kicker: "01 — Irrigation & Repair", title: "Systems that don't waste a drop", description: "Design, install and repair for sprinkler and drip systems, tuned to your soil and sun.", bg: "#25452f", text: "#ffffff", muted: "rgba(255,255,255,0.72)", numberColor: "rgba(255,255,255,0.22)" },
-  { number: "02", kicker: "02 — Lawn Care", title: "Grass that earns the compliments", description: "Mowing, feeding and seasonal treatment programs built around your lawn's actual condition.", bg: "#2e5b3f", text: "#ffffff", muted: "rgba(255,255,255,0.76)", numberColor: "rgba(255,255,255,0.22)" },
-  { number: "03", kicker: "03 — Specialized Services", title: "The jobs other crews skip", description: "Drainage, grading and the fixes that stop a problem before it becomes a rebuild.", bg: "#3f7a52", text: "#ffffff", muted: "rgba(255,255,255,0.76)", numberColor: "rgba(255,255,255,0.24)" },
-  { number: "04", kicker: "04 — Water Conservation", title: "Smart schedules, lower bills", description: "Controller upgrades and audits that cut water use without cutting results.", bg: "#173321", text: "#ffffff", muted: "rgba(255,255,255,0.76)", numberColor: "rgba(255,255,255,0.24)" },
+  { number: "01", kicker: "01 — Irrigation & Repair", title: "Systems that don't waste a drop", description: "Design, install and repair for sprinkler and drip systems, tuned to your soil and sun.", image: "/images/about-valve-adjustment.jpg", bg: "#25452f", text: "#ffffff", muted: "rgba(255,255,255,0.72)", numberColor: "rgba(255,255,255,0.22)" },
+  { number: "02", kicker: "02 — Lawn Care", title: "Grass that earns the compliments", description: "Mowing, feeding and seasonal treatment programs built around your lawn's actual condition.", image: "/images/lawn-technician-mowing.jpg", bg: "#2e5b3f", text: "#ffffff", muted: "rgba(255,255,255,0.76)", numberColor: "rgba(255,255,255,0.22)" },
+  { number: "03", kicker: "03 — Specialized Services", title: "The jobs other crews skip", description: "Drainage, grading and the fixes that stop a problem before it becomes a rebuild.", image: "/images/palm-tree-trimming.jpg", bg: "#3f7a52", text: "#ffffff", muted: "rgba(255,255,255,0.76)", numberColor: "rgba(255,255,255,0.24)" },
+  { number: "04", kicker: "04 — Water Conservation", title: "Smart schedules, lower bills", description: "Controller upgrades and audits that cut water use without cutting results.", image: "/images/gallery-5.jpg", bg: "#173321", text: "#ffffff", muted: "rgba(255,255,255,0.76)", numberColor: "rgba(255,255,255,0.24)" },
 ];
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -122,6 +129,9 @@ export default function ServiceScrollCards() {
       <div className="kex-scroll-page">
         <section id="services" ref={sceneRef} className="kex-scroll-scene" aria-labelledby="services-title">
           <div className="kex-sticky-stage">
+            <div className="kex-photo" aria-hidden="true">
+              <Image src="/images/sprinklers-golden-hour-lawn.jpg" alt="" fill sizes="100vw" quality={70} />
+            </div>
             <div className="kex-hero-content">
               <h2 id="services-title" ref={heroTitleRef} className="kex-hero-title">
                 Our Services
@@ -142,6 +152,9 @@ export default function ServiceScrollCards() {
                     className="kex-scroll-card"
                     style={style}
                   >
+                    <div className="kex-photo" aria-hidden="true">
+                      <Image src={card.image} alt="" fill sizes="100vw" quality={70} />
+                    </div>
                     <div className="kex-card-inner">
                       <div className="kex-card-number" aria-hidden="true">
                         {card.number}

@@ -18,6 +18,8 @@ export interface SplitRevealHeroProps {
   footerLeft?: string;
   footerRight?: string;
   className?: string;
+  /** Fires once the curtains have opened and the card title has landed (immediately for reduced motion). */
+  onComplete?: () => void;
 }
 
 const splitChars = (text: string, markFirst = false) =>
@@ -46,7 +48,7 @@ const splitWords = (text: string) => {
   ));
 };
 
-// Decorative, so the cover text is a <p>, not a heading: the card below holds the page's only <h1>.
+// Decorative cover text: a <p>, never a heading.
 const Cover = ({ position, studio, numeral }: { position: "top" | "bottom"; studio: string; numeral: string }) => (
   <div className={`sf-cover sf-${position}`} aria-hidden="true">
     <div className="sf-intro">
@@ -59,9 +61,10 @@ const Cover = ({ position, studio, numeral }: { position: "top" | "bottom"; stud
 );
 
 /**
- * Cover-reveal intro: two panels show the studio name, which folds into the numeral; the panels then
- * split to open onto the hero image, and a card reveals the title. Web Animations API only, runs once
- * on load, and shows the settled end state straight away for reduced-motion visitors.
+ * Split-curtain typography intro (used as the site preloader — see IntroPreloader): two panels show the
+ * studio name, which folds into the numeral; the panels then split to open onto the hero image, and a
+ * card reveals the title. Web Animations API only. Purely decorative, so it carries no heading: the
+ * page's <h1> lives in the real hero underneath.
  */
 export default function SplitRevealHero({
   studio = "Comprehensive Irrigation",
@@ -76,8 +79,14 @@ export default function SplitRevealHero({
   footerLeft = "Scroll Down",
   footerRight = "Licensed & Insured",
   className = "",
+  onComplete,
 }: SplitRevealHeroProps) {
   const rootRef = useRef<HTMLElement>(null);
+  // Held in a ref so a new callback identity never restarts the timeline.
+  const onCompleteRef = useRef(onComplete);
+  useLayoutEffect(() => {
+    onCompleteRef.current = onComplete;
+  });
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -130,6 +139,7 @@ export default function SplitRevealHero({
       select<HTMLElement>(".sf-card .sf-char > span").forEach((character) => {
         character.style.transform = "translate3d(0,0,0)";
       });
+      onCompleteRef.current?.();
       return;
     }
 
@@ -173,11 +183,12 @@ export default function SplitRevealHero({
       });
 
       remainingIntroCharacters.forEach((character, index) => {
-        animate(character, [{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(0,110%,0)" }], { duration: 720, delay: 1920 + index * 45, easing: ease });
+        animate(character, [{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(0,110%,0)" }], { duration: 720, delay: 1920 + index * 25, easing: ease });
       });
 
       numeralInnerCharacters.forEach((character, index) => {
-        animate(character, [{ transform: "translate3d(0,-110%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 2420 + index * 70, easing: ease });
+        // A long studio name is still leaving at 2420ms, so the numeral waits until it has cleared.
+        animate(character, [{ transform: "translate3d(0,-110%,0)" }, { transform: "translate3d(0,0,0)" }], { duration: 720, delay: 2820 + index * 70, easing: ease });
       });
 
       firstCharacters.forEach((character) => {
@@ -235,7 +246,10 @@ export default function SplitRevealHero({
       });
 
       // Once everything has landed, drop the covers entirely so nothing sits over the page.
-      later(6420 + cardCharacters.length * 45 + 800, hideCovers);
+      later(6420 + cardCharacters.length * 45 + 800, () => {
+        hideCovers();
+        onCompleteRef.current?.();
+      });
     };
 
     // Start once the hero font is in, so the measured positions are the real ones.
@@ -256,7 +270,7 @@ export default function SplitRevealHero({
   }, []);
 
   return (
-    <section ref={rootRef} className={`sf-root ${className}`} aria-labelledby="hero-title">
+    <section ref={rootRef} className={`sf-root ${className}`} aria-hidden="true">
       <style>{styles}</style>
       <Cover position="bottom" studio={studio} numeral={numeral} />
       <Cover position="top" studio={studio} numeral={numeral} />
@@ -280,10 +294,7 @@ export default function SplitRevealHero({
           </div>
         )}
         <div className="sf-card">
-          <h1 id="hero-title">
-            <span aria-hidden="true">{splitWordChars(cardTitle)}</span>
-            <span className="sr-only">{cardTitle} — irrigation repair, lawn care and water conservation in Davenport, FL</span>
-          </h1>
+          <p className="sf-card-title">{splitWordChars(cardTitle)}</p>
         </div>
         <div className="sf-footer">
           <span>{footerLeft}</span>
@@ -297,7 +308,7 @@ export default function SplitRevealHero({
 const styles = `
 .sf-root,.sf-root *{box-sizing:border-box;}
 .sf-root{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;isolation:isolate;background:#1f3d2b;color:#fff;font-family:var(--font-dm-sans),"Helvetica Neue",Arial,sans-serif;}
-.sf-root .sf-display,.sf-root h1,.sf-root p{margin:0;text-transform:uppercase;}
+.sf-root .sf-display,.sf-root p{margin:0;text-transform:uppercase;}
 .sf-cover,.sf-tags,.sf-scene{position:absolute;inset:0;}
 .sf-cover{z-index:4;overflow:hidden;background:#1f3d2b;backface-visibility:hidden;transform:translate3d(0,0,0);will-change:transform,clip-path;contain:layout paint;}
 .sf-bottom{z-index:3;} .sf-top{z-index:4;}
@@ -320,9 +331,9 @@ const styles = `
 .sf-nav,.sf-footer{position:absolute;left:0;z-index:2;display:flex;width:100%;align-items:center;justify-content:space-between;gap:1rem;padding:2rem;text-transform:uppercase;font-size:13px;font-weight:500;letter-spacing:.06em;}
 .sf-nav{top:0;} .sf-nav strong{font-size:20px;} .sf-footer{bottom:0;}
 .sf-card{position:absolute;top:50%;left:50%;z-index:2;display:flex;width:min(34%,560px);height:60%;align-items:center;justify-content:center;overflow:hidden;transform:translate3d(-50%,-50%,0);background:#f6f2e8;clip-path:inset(50% 0);backface-visibility:hidden;will-change:clip-path;contain:layout paint;padding:1rem;text-align:center;}
-.sf-card h1{width:100%;text-align:center;color:#1f3d2b;font-family:var(--font-dm-sans),"Helvetica Neue",Arial,sans-serif;font-size:clamp(1.9rem,3vw,2.7rem);font-weight:600;letter-spacing:-0.02em;line-height:1.05;}
+.sf-card .sf-card-title{width:100%;text-align:center;color:#1f3d2b;font-family:var(--font-dm-sans),"Helvetica Neue",Arial,sans-serif;font-size:clamp(1.9rem,3vw,2.7rem);font-weight:600;letter-spacing:-0.02em;line-height:1.05;}
 .sf-card .sf-char > span{transform:translate3d(0,110%,0);}
 .sf-wordwrap{display:inline-block;white-space:nowrap;}
 @media (max-width:1000px){.sf-number{left:calc(50% + 4rem);} .sf-card{width:75%;} .sf-nav,.sf-footer{padding:1.4rem;} .sf-tag-1{left:8%;} .sf-tag-2{left:12%;} .sf-tag-3{right:8%;}}
-@media (max-width:560px){.sf-card{width:80%;height:56%;} .sf-card h1{font-size:clamp(1.7rem,9vw,2.4rem);} .sf-footer{padding:1rem;font-size:11px;} .sf-tag{font-size:10px;}}
+@media (max-width:560px){.sf-card{width:80%;height:56%;} .sf-card .sf-card-title{font-size:clamp(1.7rem,9vw,2.4rem);} .sf-footer{padding:1rem;font-size:11px;} .sf-tag{font-size:10px;}}
 `;

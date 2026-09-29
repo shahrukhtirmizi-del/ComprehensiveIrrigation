@@ -58,7 +58,7 @@ const FULL = `M${W},${H} Q${CX},${H} 0,${H} L0,0 L${W},0 Z`;
 const MORPH_MS = 1050;
 
 const css = `
-  .dm-toggle{position:relative;height:3rem;min-width:5.6rem;padding:0 1.1rem;border-radius:999px;cursor:pointer;
+  .dm-toggle{position:relative;height:3rem;min-width:4.4rem;padding:0 .25rem;border-radius:.25rem;background:none;cursor:pointer;
     text-transform:uppercase;font-size:.72rem;font-weight:700;letter-spacing:.22em;font-family:var(--font-sans),Arial,sans-serif;
     transition:background-color .3s ease,color .3s ease;}
   .dm-toggle span{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .25s ease;}
@@ -113,9 +113,8 @@ export function DrapeToggle({
       aria-expanded={open}
       aria-controls="site-menu"
       aria-label={open ? "Close menu" : "Open menu"}
-      className={`dm-toggle ${
-        open ? "bg-charcoal text-white" : light ? "bg-white/15 text-white ring-1 ring-white/30 backdrop-blur" : "bg-charcoal text-white"
-      }`}
+      // Plain text, no pill: white over the dark hero, dark green over the page and the cream drape.
+      className={`dm-toggle hover:opacity-70 ${light && !open ? "text-white" : "text-charcoal"}`}
     >
       <span className="dm-toggle-open" aria-hidden>
         Menu

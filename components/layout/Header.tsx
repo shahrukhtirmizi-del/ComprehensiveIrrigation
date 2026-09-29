@@ -106,7 +106,12 @@ export function Header() {
               <PhoneIcon className="h-4 w-4" />
               <span className="nav-link">{business.phone}</span>
             </a>
-            <ArrowButton href="/#quote" onClick={() => open && navigate()} className="hidden !px-5 !py-3 sm:inline-flex">
+            <ArrowButton
+              href="/#quote"
+              variant="bare"
+              onClick={() => open && navigate()}
+              className={`hidden px-3 text-sm font-bold transition-colors duration-500 sm:inline-flex ${light ? "text-white" : "text-charcoal"}`}
+            >
               Get a Free Quote
             </ArrowButton>
             <DrapeToggle open={open} onToggle={toggle} light={light} buttonRef={toggleRef} />

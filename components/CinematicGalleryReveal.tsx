@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Lenis from "lenis";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
@@ -211,6 +212,9 @@ export default function CinematicGalleryReveal({
           <div className="cgr-overlay" />
         </section>
         <section className="cgr-showcase" id="cgr-showcase" aria-labelledby="cgr-showcase-title">
+          <div className="cgr-bg" aria-hidden="true">
+            <Image src="/images/work-pool-backyard-sunset.jpg" alt="" fill sizes="100vw" quality={70} />
+          </div>
           <p className="cgr-section-label">Selected stories</p>
           <h2 id="cgr-showcase-title">{showcaseHeading}</h2>
           <p className="cgr-section-description">
@@ -218,6 +222,9 @@ export default function CinematicGalleryReveal({
           </p>
         </section>
         <section className="cgr-contact" id="cgr-contact" aria-labelledby="cgr-contact-title">
+          <div className="cgr-bg" aria-hidden="true">
+            <Image src="/images/hero-sprinkler-golden-hour.jpg" alt="" fill sizes="100vw" quality={70} />
+          </div>
           <p className="cgr-section-label">New collaborations</p>
           <h2 id="cgr-contact-title">{contactHeading}</h2>
           <div className="cgr-contact-cta">
@@ -259,6 +266,12 @@ const styles = `
 .cgr-showcase,.cgr-contact{display:flex;min-height:100svh;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,7vw,7rem);text-align:center;}
 .cgr-showcase{background:radial-gradient(circle at 50% -10%,rgba(233,239,227,.16),transparent 43%),linear-gradient(180deg,#1f3d2b,#2e5b3f);}
 .cgr-contact{background:radial-gradient(circle at 50% 115%,rgba(201,168,118,.32),transparent 45%),linear-gradient(180deg,#2e5b3f,#1f3d2b);}
+.cgr-bg{position:absolute;inset:0;z-index:0;}
+.cgr-bg img{object-fit:cover;}
+.cgr-bg::after{content:"";position:absolute;inset:0;}
+.cgr-showcase .cgr-bg::after{background:radial-gradient(ellipse at 50% 45%,rgba(31,61,43,.55),rgba(31,61,43,.82) 75%),linear-gradient(180deg,#1f3d2b 0%,transparent 22%);}
+.cgr-contact .cgr-bg::after{background:radial-gradient(circle at 50% 115%,rgba(201,168,118,.35),transparent 45%),radial-gradient(ellipse at 50% 45%,rgba(31,61,43,.5),rgba(31,61,43,.82) 75%);}
+.cgr-showcase > :not(.cgr-bg),.cgr-contact > :not(.cgr-bg){position:relative;z-index:1;}
 .cgr-section-label{margin-bottom:1.5rem !important;color:rgba(255,255,255,.55);font-size:.72rem;font-weight:750;letter-spacing:.18em;text-transform:uppercase;}
 .cgr-showcase h2,.cgr-contact h2{max-width:1100px;color:#fff;font-family:inherit;font-size:clamp(3.2rem,8.5vw,9rem);font-weight:520;letter-spacing:-.08em;line-height:.87;text-wrap:balance;}
 .cgr-section-description{max-width:550px;margin-top:2rem !important;color:rgba(255,255,255,.62);font-size:clamp(1rem,1.35vw,1.25rem);line-height:1.6;}
